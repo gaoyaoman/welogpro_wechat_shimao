@@ -1,0 +1,8 @@
+/* pages/snap/index.wxss */
+.take-photo{
+  height: calc(100vh);
+}
+.photo-btn{
+  height: 120rpx;
+  font-size: 60rpx;
+}

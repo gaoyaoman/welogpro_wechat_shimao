@@ -1,0 +1,3 @@
+<!--pages/snap/index.wxml-->
+<camera device-position="back" flash="off" binderror="error" style="width: 100%; height: calc(85vh);"></camera>
+<i-button bind:click="takePhoto" type="ghost">拍照</i-button>

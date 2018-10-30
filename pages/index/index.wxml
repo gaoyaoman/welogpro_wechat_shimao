@@ -1,0 +1,103 @@
+<view class="container m-b5">
+  <view class="user-header p-r">
+    <view class="user-bg-box" bindtap='getRight'>
+      <view class="header-img-box">
+        <image src="{{avatarUrl?avatarUrl:'../../image/niming.png'}}" style='width:100%;height:100%'></image>
+      </view>
+      <view wx-if="{{!phoneNumber}}" class='phone-box'>
+        <view class='tip-big'>
+          <text>点击立即申请权限</text>
+        </view>
+        <view class='tip-small'>
+          <text>获取权限后可使用更多功能</text>
+        </view>
+      </view>
+      <view wx-if="{{!!phoneNumber}}">
+        <navigator url="../user/user">
+          <view  class='phone-box-r'>
+            <view class='tip-big'>
+              <text class='phone-box-text'>{{phoneNumber}}</text>
+              <view class="user-orderContBox">
+                <text class="iconfont icon-xiayige user-orderJtou" style='color:#fff;margin-left:240rpx'></text>
+              </view>
+            </view>
+          </view>
+        </navigator>
+      </view>
+    </view>
+  </view>
+  <view class="m-top20">
+    <navigator url="{{phoneNumber?'../snap/index':''}}">
+    <!-- <navigator url="../snap/editLogs"> -->
+      <view class="user-order-title dis-flex b-f">
+        <view class="flex-box">
+          <text class="iconfont icon-paishe common-icon"></text>
+          <text class="user-orderName h4">随手抓拍</text>
+        </view>
+        <view class="flex-box">
+          <view class="user-orderContBox">
+            <text wx-if="{{!phoneNumber}}" class="message">获取权限后可操作</text>
+            <text class="iconfont icon-xiayige user-orderJtou"></text>
+          </view>
+        </view>
+      </view>
+    </navigator>
+    <navigator url="{{phoneNumber?'../taskDetail/index':''}}">
+      <view class="user-order-title dis-flex b-f">
+        <view class="flex-box">
+          <text class="iconfont icon-list common-icon"></text>
+          <text class="user-orderName h4">任务列表</text>
+        </view>
+        <view class="flex-box">
+          <view class="user-orderContBox">
+            <text wx-if="{{!phoneNumber}}" class="message">获取权限后可操作</text>
+            <i-badge wx-if="{{todo>0&&phoneNumber}}"  style="margin-right:20rpx" count="{{todo}}"/>
+            <text class="iconfont icon-xiayige user-orderJtou"></text>
+          </view>
+        </view>
+      </view>
+    </navigator>
+    <navigator url="{{phoneNumber?'../voucher/index':''}}">
+      <view class="user-order-title dis-flex b-f">
+        <view class="flex-box">
+          <text class="iconfont icon-pingzheng common-icon"></text>
+          <text class="user-orderName h4">记账报销</text>
+        </view>
+        <view class="flex-box">
+          <view class="user-orderContBox">
+            <text wx-if="{{!phoneNumber}}" class="message">获取权限后可操作</text>
+            <text class="iconfont icon-xiayige user-orderJtou"></text>
+          </view>
+        </view>
+      </view>
+		</navigator>
+		<navigator url="{{phoneNumber?'../logs/logs':''}}">
+      <view class="user-order-title dis-flex b-f">
+        <view class="flex-box">
+          <text class="iconfont icon-rizhi common-icon"></text>
+          <text class="user-orderName h4">日志导出</text>
+        </view>
+        <view class="flex-box">
+          <view class="user-orderContBox">
+            <text wx-if="{{!phoneNumber}}" class="message">获取权限后可操作</text>
+            <text class="iconfont icon-xiayige user-orderJtou"></text>
+          </view>
+        </view>
+      </view>
+		</navigator>
+		<navigator url="{{phoneNumber?'../queryData/queryData':''}}">
+      <view class="user-order-title dis-flex b-f">
+        <view class="flex-box">
+          <text class="iconfont icon-project common-icon"></text>
+          <text class="user-orderName h4">资料查询</text>
+        </view>
+        <view class="flex-box">
+          <view class="user-orderContBox">
+            <text wx-if="{{!phoneNumber}}" class="message">获取权限后可操作</text>
+            <text class="iconfont icon-xiayige user-orderJtou"></text>
+          </view>
+        </view>
+      </view>
+		</navigator>			
+  </view>
+</view>

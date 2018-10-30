@@ -1,0 +1,6 @@
+{
+    "navigationBarTitleText": "萬德通工程日志",
+    "usingComponents": {
+      "i-badge": "../../dist/badge/index"
+    }
+}

@@ -1,0 +1,2 @@
+<!--pages/logs/view.wxml-->
+<web-view src="{{pdfURL}}"></web-view>

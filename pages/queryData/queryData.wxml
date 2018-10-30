@@ -1,0 +1,24 @@
+<!--pages/queryData/queryData.wxml-->
+<view>
+	<i-sticky scrollTop="{{scrollTop}}">
+        <i-sticky-item i-class="">
+            <view slot="title" class="flexList">
+							<!-- <text style="width:50rpx;">#</text> -->
+							<text style="flex:1;">资料查询</text>
+						</view>
+            <view slot="content">
+              <i-cell-group wx:if="{{fileList.length>0}}" wx:for='{{fileList}}' wx:key='index'>
+    						<i-cell title="{{item}}" i-class="border-b" bind:click="toView" data-index="{{item}}">
+									<view slot="icon">
+										<i-icon type="document" size="20" color="#e94a4c" />
+									</view>
+									<view slot="footer">
+										<text class='operation-text'>预览</text>
+									</view>
+								</i-cell>	
+							</i-cell-group>
+							<i-load-more tip="{{fileList.length?'已加载全部数据':'暂无数据'}}" loading="{{ false }}" />
+            </view>
+        </i-sticky-item>
+    </i-sticky>
+</view>

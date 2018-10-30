@@ -1,0 +1,25 @@
+/* pages/queryData/queryData.wxss */
+.flexList{
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+}
+/* .table-left{
+	width:50rpx;
+} */
+.table-middle{
+	flex:1;
+}
+.table-right{
+	width:100rpx;
+}
+.table-text{
+	font-size: 26rpx;
+}
+.border-b{
+	border-bottom: 1rpx solid rgb(240, 239, 239) !important;
+}
+.operation-text{
+	font-size: 26rpx;
+	color:#2d8cf0;
+}

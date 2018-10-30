@@ -1,0 +1,15 @@
+<!--pages/logs/logs.wxml-->
+<view>
+	<i-panel title="选择项目">
+	<view class='search-bar'>
+		<picker bindchange="selectProject" value="{{index}}" range="{{projectList}}" class='picker'>
+			<text class='project-selected'>{{projectName?projectName:'未选择'}}</text>
+		</picker>
+		<i-button bind:click="searchLogs" type="primary" inline="{{ifInLine}}" size="small" loading="{{loading}}">导出</i-button>
+	</view>
+	</i-panel>
+	<i-panel title="概览">
+		<i-input value="{{pdfURL}}" type="textarea" title="下载地址："/>
+		<i-button bind:click="viewLog" type="primary" disabled='{{disabled}}' size="small">预览日志文件</i-button>
+	</i-panel>
+</view>	

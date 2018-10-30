@@ -1,0 +1,13 @@
+/* pages/quanzi/quanzi.wxss */
+.kong{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: calc(100vh)
+}
+.tips{
+  width: auto;
+  color: #cccccc;
+  font-size: 30rpx;
+}

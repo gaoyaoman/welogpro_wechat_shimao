@@ -1,0 +1,4 @@
+<!--pages/quanzi/quanzi.wxml-->
+<view class='kong'>
+  <text class="tips">暂无内容</text>
+</view>

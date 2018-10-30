@@ -1,0 +1,47 @@
+<view>
+  <view hidden='{{changeYearFlag}}'>
+  <!-- 显示当前月份 的头部 -->
+    <view  class='top-navbar'>
+      <text class="iconfont icon-fanhui" bindtap='lastMonth'></text>
+      <view bindtap='changeYear'>{{year}}年{{month}}月</view>
+      <text class="iconfont icon-gengduo" bindtap='nextMonth'></text>
+    <!-- <text class="iconfont icon-xiayige user-orderJtou" bindtap='changeDate'></text> -->
+    <!-- <text class="iconfont icon-rili" bindtap='changeDate'></text> -->
+    </view>
+
+    <!-- 日历主体 -->
+    <view class='wrap'>
+      <view class='header'>
+      <!-- 显示周几 -->
+          <view wx:for='{{date}}' wx:key="index" class='{{(index == todayIndex) && isTodayWeek ? "weekMark" : ""}}'>{{item}}<view></view></view>
+      </view>
+      <!-- 显示日期 -->
+      <view class='date-box'>
+          <view wx:for='{{dateArr}}' wx:key="index" class='{{isToday == item.isToday ? "nowDay" : ""}}' data-date='{{item.isToday}}'>            
+              <view class='date-head'>
+                <view data-project="{{item.project}}">{{item.dateNum}}</view>
+              </view>
+              <!--显示项目内容   class='{{month == startProjectMonth && startProjectDay == day ? "showDetail" : ""}}' -->
+              <view class='date-height' data-index="{{item}}" bindtap='projectInfo'>
+                <view wx:for-item="project" catchtap='projectInfo' data-index="{{item}}" wx:for='{{item.project}}' wx-if='{{item.flag&&project.peojectFlag }}' class='showDetail' wx:key="index" >{{project.taskText}}</view>
+              </view>
+          </view>
+      </view>
+  </view>
+</view>
+
+  <!-- 选择年份的部分 -->
+<view class='chooseYear' hidden='{{!changeYearFlag}}'>
+  <view  class='top-navbar'>
+      <text class="iconfont icon-fanhui" bindtap='lastYear'></text>
+      <view bindtap='changeYear'>{{year}}</view>
+      <text class="iconfont icon-gengduo" bindtap='nextYear'></text>
+    <!-- <text class="iconfont icon-xiayige user-orderJtou" bindtap='changeDate'></text> -->
+    <!-- <text class="iconfont icon-rili" bindtap='changeDate'></text> -->
+    </view>
+      <view class='year-box'>
+         <view wx:for='{{yearList}}' data-index="{{item}}" wx:key="index" class='{{(index == nowYearIndex) ? "nowYear" : ""}}' 
+         bindtap='clickYear'>{{item}}</view>
+      </view>
+</view>
+</view>

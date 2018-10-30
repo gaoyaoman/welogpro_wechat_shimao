@@ -1,0 +1,68 @@
+<view>  
+<view class='today' >
+  <view class='change-day-btn' bindtap='changeDay' data-f="pre">
+    <text class="iconfont icon-fanhui"></text>
+    <text class='change-day-btn-font'>前一天</text>
+  </view>
+  <view bindtap='returnDate' class='return'>
+    <navigator url='../taskList/task'>
+      <text class='return-date'>当前日期：{{isToday}}</text>
+    </navigator>
+  </view>
+  <view class='change-day-btn' bindtap='changeDay' data-f="next">
+    <text>后一天</text>
+    <text class="iconfont icon-gengduo"></text>
+  </view>
+</view>
+
+  <scroll-view scroll-x="true" style="height:46px;" >
+  <view class="tab-navbar" >
+    <view wx:for="{{navbar}}" data-title="{{item}}"  wx:key="unique" bindtap="navbarTap" class="item {{currentTab==item ? 'active' : ''}}" >
+        {{item}}
+    </view>
+  </view>
+  </scroll-view>
+
+ <view wx:for='{{dataList}}' wx:key='index' data-idx="{{index}}"  >
+  <view class='project'  wx:if="{{currentTab==item.projectName}}">
+    <view class='project-content'>
+      <view class='project-name' >任务名称：{{item.taskText}}</view> 
+      <view class='card-content'>
+        <view class='task-info'>
+          <!-- <text class='content-title'>详细信息：</text> -->
+          <view class='task-info-text' >起始日期：{{item.startDate}}</view> 
+          <view class='task-info-text' >结束日期：{{item.endDate}}</view> 
+          <view class='task-info-text' >工期：{{item.duration}} 日</view> 
+        </view>
+        <view class='btns'>
+          <!-- <text class='content-title'>任务状态：</text>         -->
+          <view class='status-btn' wx:if="{{quality}}">
+            <text class='status-btn-text'>质量信息:</text>
+            <button wx:if="{{item.qualityStatus=='1'}}" type="primary" size="mini" plain="{{false}}" bindtap="toWrite" data-title="{{item}}" data-status="{{item.qualityStatus}}" data-statusType="质量" class='sub-btn'> 填报 </button>
+            <button wx:if="{{item.qualityStatus=='2'}}" type="warn" size="mini"  bindtap="toWrite" data-status="{{item.qualityStatus}}" data-title="{{item}}" data-statusType="质量"> 需整改 </button>
+            <button wx:if="{{item.qualityStatus=='3'}}" type="default" size="mini" plain="{{true}}" bindtap="toWrite" data-title="{{item}}" disabled='true'> 已完成 </button>
+            <button wx:if="{{!item.qualityStatus}}" type="primary" size="mini" plain="{{false}}" data-status="{{item.qualityStatus}}" bindtap="toWrite" data-title="{{item}}" class="sub-btn" data-statusType="质量"> 填报 </button>
+          </view> 
+          <view class='status-btn' wx:if="{{shcedule}}">
+            <text class='status-btn-text'>进度信息:</text>
+            <button wx:if="{{item.shceduleStatus=='1'}}" type="primary" size="mini" plain="{{false}}" bindtap="toWrite" data-title="{{item}}" class='sub-btn' data-status="{{item.shceduleStatus}}" data-statusType="进度"> 填报 </button>
+            <button wx:if="{{item.shceduleStatus=='2'}}" type="warn" size="mini"  bindtap="toWrite" data-title="{{item}}" data-status="{{item.shceduleStatus}}" data-statusType="进度"> 需整改 </button>
+            <button wx:if="{{item.shceduleStatus=='3'}}" type="default" size="mini" plain="{{true}}" bindtap="toWrite" data-title="{{item}}" disabled='true'> 已完成 </button>
+            <button wx:if="{{!item.shceduleStatus}}" type="primary" size="mini" plain="{{false}}" bindtap="toWrite" data-title="{{item}}" class="sub-btn" data-status="{{item.shceduleStatus}}" data-statusType="进度"> 填报 </button>
+          </view> 
+          <view class='status-btn' wx:if="{{safe}}">
+            <text class='status-btn-text'>安全信息:</text>
+            <button wx:if="{{item.safeStatus=='1'}}" type="primary" size="mini" plain="{{false}}" bindtap="toWrite" data-title="{{item}}" class='sub-btn' data-status="{{item.safeStatus}}" data-statusType="安全"> 填报 </button>
+            <button wx:if="{{item.safeStatus=='2'}}" type="warn" size="mini"  bindtap="toWrite" data-title="{{item}}" data-status="{{item.safeStatus}}" data-statusType="安全"> 需整改 </button>
+            <button wx:if="{{item.safeStatus=='3'}}" type="default" size="mini" plain="{{true}}" bindtap="toWrite" data-title="{{item}}" disabled='true'> 已完成 </button>
+            <button wx:if="{{!item.safeStatus}}" type="primary" size="mini" plain="{{false}}" bindtap="toWrite" data-title="{{item}}" class="sub-btn" data-status="{{item.safeStatus}}" data-statusType="安全"> 填报 </button>
+          </view> 
+        </view>
+        </view>
+      </view>
+    </view>
+</view>
+  <view wx:if="{{noProject}}" class="no-project">
+    <text class="no-text">——————</text>今日暂无项目<text class="no-text">——————</text>  
+  </view>
+</view>

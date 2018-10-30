@@ -1,0 +1,15 @@
+<!-- <view> -->
+<view class="container">
+  <view class="wechatapp">
+      <!-- <image class="header" src="{{avatarUrl?avatarUrl:'../../image/niming.png'}}"></image> -->
+    <view class="header">
+      <open-data class="" type="userAvatarUrl"></open-data>
+    </view>
+  </view>
+  <!-- <view class="auth-title">申请获取以下权限</view> -->
+  <view class="auth-subtitle">获得你的微信公开信息（昵称、头像等）</view>
+  <view class="auth-title"></view>
+  <!-- <view class="auth-subtitle">萬德通工程日志使用微信绑定的手机号进行获取操作权限，请在必要时允许小程序获取您微信绑定的手机号码。</view> -->
+  <button class="login-btn" open-type="getUserInfo" bindgetuserinfo="bindGetUserInfo"><text class="iconfont icon-weixin btn-icon"></text>微信快速授权</button> 
+</view>
+<!-- </view> -->

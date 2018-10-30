@@ -1,0 +1,45 @@
+{
+	"pages": [
+		"pages/index/index",
+		"pages/login/getRight",
+		"pages/quanzi/quanzi",
+		"pages/user/user",
+		"pages/user/userInfo",
+		"pages/voucher/index",
+		"pages/logs/logs",
+		"pages/taskList/task",
+		"pages/snap/editLogs",
+		"pages/snap/index",
+		"pages/taskDetail/index",
+		"pages/logs/view",
+		"pages/queryData/fileView",
+		"pages/queryData/queryData"
+	],
+	"window": {
+		"backgroundTextStyle": "light",
+		"navigationBarBackgroundColor": "#1860be",
+		"navigationBarTextStyle": "white",
+		"navigationBarTitleText": "萬德通工程日志"
+	},
+	"tabBar": {
+		"color": "#bfbfbf",
+		"selectedColor": "#13227a",
+		"borderStyle": "black",
+		"backgroundColor": "#ffffff",
+		"list": [
+			{
+				"pagePath": "pages/quanzi/quanzi",
+				"text": "圈子",
+				"iconPath": "image/quanzi.png",
+				"selectedIconPath": "image/quanzi-chose.png"
+			},
+			{
+				"pagePath": "pages/index/index",
+				"text": "我的",
+				"iconPath": "image/mine.png",
+				"selectedIconPath": "image/mine-chose.png"
+			}
+		],
+		"position": "bottom"
+	}
+}

@@ -1,0 +1,34 @@
+/* pages/user/user.wxss */
+@import '../index/index.wxss';
+
+.user-order-title1{
+  border-bottom: 1rpx solid #eee;
+  padding: 8rpx 0;
+  position: relative;
+}
+.avatar-btn{
+  border: 0;
+  
+}
+.fs-12{
+  font-size: 28rpx;
+  margin-right: 20rpx;
+}
+.login-out-btn {
+  border: none;
+  height: 88rpx;
+  background: #F56C6C;
+  color: #fff;
+  font-size: 36rpx;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  width: 90%;
+}
+.top-110{
+  margin-top: 110rpx;
+}
+.setting-btn{
+  border: 0;
+  margin: 0;
+}

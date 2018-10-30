@@ -1,0 +1,18 @@
+/* pages/logs/logs.wxss */
+.panel{
+	padding: 20rpx
+}
+.project-selected{
+	font-size: 26rpx;
+  font-weight: bolder;
+}
+.picker{
+	flex: 1;
+	padding: 30rpx !important;
+}
+.search-bar{
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+}
