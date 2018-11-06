@@ -94,7 +94,6 @@ App({
               'content-type': 'application/json' // 默认值
             },
             success: function (res) {
-							console.log('code res',)
               wx.setStorageSync('openid', res.data.openid);
               wx.setStorageSync('sessionKey', res.data.sessionKey);
             }
