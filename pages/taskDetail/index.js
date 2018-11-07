@@ -21,20 +21,20 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    let date=null;
-    let _this=this;
-    if(App.globalData.ifFromMonth){
+    let date = null;
+    let _this = this;
+    if (App.globalData.ifFromMonth && App.globalData.projectDay) {
       //从日历界面跳转来
       date = dateformat.format(new Date(App.globalData.projectDay), 'yyyy/MM/dd');
-    }else{
+    } else {
       //从主页index跳转来
-      date = dateformat.format(new Date(), 'yyyy/MM/dd'); 
+      date = dateformat.format(new Date(), 'yyyy/MM/dd');
     }
     _this.setData({
       isToday: date,
       noProject: false
     })
-    App.globalData.projectDay=false;
+    App.globalData.projectDay = false;
     wx.request({
       url: App.globalData.api + 'welogTaskController/resId',
       data: {
@@ -47,56 +47,56 @@ Page({
       success(res) {
         // console.log('res', res)
         if (res.errMsg === "request:ok") {
-					if (res.data !=='no task'){
-						let navbar = [], dataList = [];
-						let list1 = [], list2 = [], list3 = [];
-						for (let i = 0; i < res.data.length; i++) {
-							if (res.data[i].length !== 0) {
-								for (let j = 0; j < res.data[i].length; j++) {
-									if (navbar.indexOf(res.data[i][j].projectName) == -1) {
-										navbar.unshift(res.data[i][j].projectName) //在res中提取projectName构建navbar
-									}
-									if (!res.data[i][j].type || res.data[i][j].type === '1') {
-										list2.push(res.data[i][j])
-									} else if (res.data[i][j].type === '3') {
-										list3.push(res.data[i][j])
-									} else {
-										list1.push(res.data[i][j])
-									}
-								}
-							}
-						}
-						dataList = dataList.concat(list1);//整改
-						dataList = dataList.concat(list2);//填报
-						dataList = dataList.concat(list3);//完成
-						for (let i = 0; i < dataList.length; i++) {
-							dataList[i].startDate = dateformat.format(new Date(dataList[i].startDate), 'yyyy/MM/dd');
-							dataList[i].endDate = dateformat.format(new Date(dataList[i].endDate), 'yyyy/MM/dd');
-						}
-						//console.log('navbar', navbar);//navbar
-						//console.log('dataList', dataList)//navbar的数据项
-						if (navbar.length === 0) {
-							_this.setData({
-								navbar: [],
-								currentTab: '',
-								dataList: [],
-								noProject: true
-							})
-						} else {
-							_this.setData({
-								navbar: navbar,
-								currentTab: navbar[0],
-								dataList: dataList
-							})
-						}
-					}else{
-						_this.setData({
-							navbar: [],
-							currentTab: '',
-							dataList: [],
-							noProject: true
-						})
-					}
+          if (res.data !== 'no task') {
+            let navbar = [], dataList = [];
+            let list1 = [], list2 = [], list3 = [];
+            for (let i = 0; i < res.data.length; i++) {
+              if (res.data[i].length !== 0) {
+                for (let j = 0; j < res.data[i].length; j++) {
+                  if (navbar.indexOf(res.data[i][j].projectName) == -1) {
+                    navbar.unshift(res.data[i][j].projectName) //在res中提取projectName构建navbar
+                  }
+                  if (!res.data[i][j].type || res.data[i][j].type === '1') {
+                    list2.push(res.data[i][j])
+                  } else if (res.data[i][j].type === '3') {
+                    list3.push(res.data[i][j])
+                  } else {
+                    list1.push(res.data[i][j])
+                  }
+                }
+              }
+            }
+            dataList = dataList.concat(list1);//整改
+            dataList = dataList.concat(list2);//填报
+            dataList = dataList.concat(list3);//完成
+            for (let i = 0; i < dataList.length; i++) {
+              dataList[i].startDate = dateformat.format(new Date(dataList[i].startDate), 'yyyy/MM/dd');
+              dataList[i].endDate = dateformat.format(new Date(dataList[i].endDate), 'yyyy/MM/dd');
+            }
+            //console.log('navbar', navbar);//navbar
+            //console.log('dataList', dataList)//navbar的数据项
+            if (navbar.length === 0) {
+              _this.setData({
+                navbar: [],
+                currentTab: '',
+                dataList: [],
+                noProject: true
+              })
+            } else {
+              _this.setData({
+                navbar: navbar,
+                currentTab: navbar[0],
+                dataList: dataList
+              })
+            }
+          } else {
+            _this.setData({
+              navbar: [],
+              currentTab: '',
+              dataList: [],
+              noProject: true
+            })
+          }
         } else {
           wx.showToast({
             title: '网络请求失败,请稍后再试',
@@ -110,39 +110,39 @@ Page({
     wx.request({
       url: App.globalData.api + 'wxUserController/restListByPhone',
       data: {
-        phoneNumber:wx.getStorageSync('phoneNumber')
+        phoneNumber: wx.getStorageSync('phoneNumber')
       },
       header: {
         'content-type': 'application/json'
       },
       success(res) {
         if (res.errMsg === "request:ok") {
-          let role=res.data.data[0].note;
-          if(role===null){
+          let role = res.data.data[0].note;
+          if (role === null) {
             _this.setData({
               quality: false,
-							shcedule: false,
-							safe: false
+              shcedule: false,
+              safe: false
             })
             return true;
           }
-					//判断用户role字符串是否含有含有相应的子字符串
-					if (role.includes('质量')) {
-						_this.setData({
-							quality: true
-						})
-					}
-					if (role.includes('进度')) {
-						_this.setData({
-							shcedule: true
-						})
-					}
-					if (role.includes('安全')) {
-						_this.setData({
-							safe: true
-						})
-					}
-        	console.log(_this.data.quality,_this.data.shcedule,_this.data.safe);
+          //判断用户role字符串是否含有含有相应的子字符串
+          if (role.includes('质量')) {
+            _this.setData({
+              quality: true
+            })
+          }
+          if (role.includes('进度')) {
+            _this.setData({
+              shcedule: true
+            })
+          }
+          if (role.includes('安全')) {
+            _this.setData({
+              safe: true
+            })
+          }
+          // console.log(_this.data.quality,_this.data.shcedule,_this.data.safe);
         } else {
           wx.showToast({
             title: '网络请求失败,请稍后再试',
@@ -278,7 +278,7 @@ Page({
     if(App.globalData.ifBack){
       let date = null;
       let _this = this;
-      if (App.globalData.ifFromMonth) {
+      if (App.globalData.ifFromMonth && App.globalData.projectDay) {
         //从日历界面跳转来
         date = dateformat.format(new Date(App.globalData.projectDay), 'yyyy/MM/dd');
       } else {

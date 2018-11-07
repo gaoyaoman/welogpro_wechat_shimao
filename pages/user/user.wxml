@@ -1,47 +1,53 @@
-<view class="container m-b5">
-  <view class="user-header p-r">
-    <navigator url="userInfo" wx-if="{{!avatarUrl}}">
-      <view>
-        <view class="user-order-title dis-flex b-f">
-         <view class="flex-box">
-          <text class="user-orderName h4">头像设置</text>
-         </view>
-         <view class="flex-box">
-           <view class="user-orderContBox">
-            <text class='fs-12'>未设置</text>
-            <text class="iconfont icon-xiayige user-orderJtou"></text>
-          </view>
-         </view>
-       </view>
-      </view>
-    </navigator>
-    <view wx-if="{{!!avatarUrl}}">
-        <view class="user-order-title dis-flex b-f">
-         <view class="flex-box">
-          <text class="user-orderName h4">头像设置</text>
-         </view>
-         <view class="flex-box">
-           <view class="user-orderContBox">
-            <text class='fs-12'>已设置</text>
-            <text class="iconfont icon-xiayige user-orderJtou"></text>
-          </view>
-         </view>
-       </view>
-      </view>
-    <view>
-      <view class="user-order-title1 dis-flex b-f">
-        <view class="flex-box">
-          <text class="user-orderName h4">手机号码</text>
+<view class="container m-b5">  
+  <i-panel title="个人设置" hide-border='true'>
+    <i-cell-group>
+      <i-cell title="头像" value="设置" is-link url="userInfo"></i-cell>
+    </i-cell-group>
+  </i-panel>
+  <i-panel title="用户角色" hide-border='true'>
+    <view style="padding: 10px 14px;">
+        <view wx-if="{{roles.length>0}}">
+            <i-tag
+                wx:for="{{roles}}"
+                wx:key="{{index}}"
+                name="{{item}}"
+                color="blue"
+                style="margin-right:20rpx;">
+                {{item}}
+              </i-tag>
         </view>
-        <view class="flex-box">
-          <view class="user-orderContBox">
-            <text class='fs-12'>{{phoneNumber}}</text>
-            <text class="iconfont icon-xiayige user-orderJtou"></text>
-          </view>
-        </view>
-      </view>
+        <view wx:if="{{roles.length===0}}" class="tag-role">暂未分配角色</view>
     </view>
-  </view>
+  </i-panel>
+  <i-panel title="任务概览" hide-border='true'>
+      <view style="padding: 10px 0;">
+          <scroll-view scroll-x="true" class="scroll-view-x">
+              <view class="tab-navbar" >
+                  <view wx:for="{{navbar}}" data-title="{{item}}"  wx:key="unique" bindtap="navbarTap" class="item {{currentTab==item ? 'active' : ''}}" >
+                      {{item}}
+                  </view>
+              </view>
+          </scroll-view>
+          <view wx:for='{{dataList}}' wx:key='index' data-idx="{{index}}"  >
+              <view class='project'  wx:if="{{currentTab==item.projectName}}">
+                  <view class='project-content'>
+                      <view class='project-name' >任务名称：{{item.taskText}}</view>
+                      <view class='card-content'>
+                          <view class='task-info'>
+                              <!-- <text class='content-title'>详细信息：</text> -->
+                              <view class='task-info-text' >起始日期：{{item.startDate}}</view>
+                              <view class='task-info-text' >结束日期：{{item.endDate}}</view>
+                              <view class='task-info-text' >工期：{{item.duration}} 日</view>
+                          </view>
+                      </view>
+                  </view>
+              </view>
+          </view>
+          <view wx:if="{{noProject}}" class="no-project">
+              <text class="no-text">——————</text>暂无信息<text class="no-text">——————</text>
+          </view>
+      </view>
+  </i-panel>
   <i-panel title="小程序设置" hide-border='true'>
     <view style="padding: 10px;">
       <button plain='true' type='default' open-type="openSetting">授权设置</button>

@@ -1,22 +1,21 @@
 /* pages/taskDetail/index.wxss */
-
+.scroll-view-x{
+  height: 45rpx;
+  padding:20rpx 20rpx 0 20rpx;
+}
 .tab-navbar{
-  font-size:16px;
-  margin:10px auto;
-  white-space: nowrap;
-  /* overflow-x:scroll;
-  height:20px; */
+  display: flex;
+  flex-direction: row;
+  justify-content: space-start;
+  align-items: center;
 }
 .tab-navbar view{
- 	margin:0 10px;
-  width:150px;
-  height:50px;
-  display:inline-block;
-  text-align:center;
-  line-height:50px;
+  margin:0 10rpx;
+  font-size: 30rpx;  
 }
 .item.active{
-  color: rgb(7, 148, 31);
+  color:rgb(7, 148, 31);
+  font-weight: bold;
   border-bottom: 1px solid rgb(7, 148, 31);
 }
 button{

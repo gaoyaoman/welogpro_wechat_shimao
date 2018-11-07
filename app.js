@@ -84,7 +84,6 @@ App({
         } 
 				else {
           var code = res.code; //（获取code代码）
-					console.log(res)
           wx.request({
             url: getApp().globalData.api +'wxuser/login',
             data: {
@@ -103,12 +102,12 @@ App({
     })
   },
   globalData: {
-		api:'https://wxss.welogpro.com/jeecg/rest/',
+    // api: 'https://wxss.andyxin.cn/jeecg/rest/',
+    api: 'https://wxss.welogpro.com/jeecg/rest/',
     userInfo: null,
     projectDay:null,
     ifFromMonth:false,
     ifBack:false
-    
   }
 })
 

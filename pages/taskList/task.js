@@ -47,7 +47,6 @@ Page({
   },
   getProject(){
     let _this = this
-    // console.log('wx.getStorageSync phoneNumber', wx.getStorageSync('phoneNumber'))  "13204080038"
     wx.request({
       url: App.globalData.api+'welogTaskController/resId',
       data: {
@@ -58,6 +57,7 @@ Page({
           _this.setData({
             projectList: res.data
           })
+          console.log('list', res.data);
         }else{
           if (res ==="no resId"){
             wx.showToast({

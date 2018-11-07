@@ -1,13 +1,18 @@
 // pages/user/user.js
-let App=getApp().globalData;
+let dateformat = require('../../utils/dateFormat.js');
+let App = getApp();
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-    phoneNumber:null,
-    avatarUrl:null
+    roles:[],
+    navbar: [],       //
+    currentTab:"",    //
+    dataList:[],      //
+    List:[],          //
+    noProject:false
   },
 
   /**
@@ -15,11 +20,6 @@ Page({
    */
   onLoad: function (options) {
     let _this=this;
-    if(!!wx.getStorageSync('phoneNumber')){
-      _this.setData({
-        phoneNumber: wx.getStorageSync('phoneNumber')
-      })
-    }
     if (!!wx.getStorageSync('avatarUrl')) {
       _this.setData({
         avatarUrl: wx.getStorageSync('avatarUrl')
@@ -38,12 +38,96 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    let _this=this;
-    if (!!wx.getStorageSync('avatarUrl')) {
-      _this.setData({
-        avatarUrl: wx.getStorageSync('avatarUrl')
-      })
-    }
+    let date = dateformat.format(new Date(), 'yyyy/MM/dd');;
+    let _this = this;
+    //获取用户角色
+    wx.request({
+      url: App.globalData.api + 'wxUserController/restListByPhone',
+      data: {
+        phoneNumber: wx.getStorageSync('phoneNumber')
+      },
+      header: {
+        'content-type': 'application/json'
+      },
+      success(res) {
+        if (res.errMsg === "request:ok") {
+          let role = res.data.data[0].note.split(',');
+          _this.setData({
+            roles: role
+          })
+          console.log('role',role)
+        } else {
+          wx.showToast({
+            title: '网络请求失败,请稍后再试',
+            icon: 'none',
+            duration: 3000
+          })
+        }
+      }
+    });
+    wx.request({
+      url: App.globalData.api + 'welogTaskController/resId',
+      data: {
+        resId: wx.getStorageSync('phoneNumber'),
+      },
+      header: {
+        'content-type': 'application/json'
+      },
+      success(res) {
+        // console.log('res', res)
+        if (res.errMsg === "request:ok") {
+          if (res.data !== 'no task') {
+            let navbar = [], dataList = [];
+            let list=[]
+            for (let i = 0; i < res.data.length; i++) {
+              if (res.data[i].length !== 0) {
+                for (let j = 0; j < res.data[i].length; j++) {
+                  if (navbar.indexOf(res.data[i][j].projectName) == -1) {
+                    navbar.unshift(res.data[i][j].projectName) //在res中提取projectName构建navbar
+                  }
+                  list.push(res.data[i][j])
+                
+                }
+              }
+            }
+            dataList = dataList.concat(list);
+            for (let i = 0; i < dataList.length; i++) {
+              dataList[i].startDate = dateformat.format(new Date(dataList[i].startDate), 'yyyy/MM/dd');
+              dataList[i].endDate = dateformat.format(new Date(dataList[i].endDate), 'yyyy/MM/dd');
+            }
+            //console.log('navbar', navbar);//navbar
+            //console.log('dataList', dataList)//navbar的数据项
+            if (navbar.length === 0) {
+              _this.setData({
+                navbar: [],
+                currentTab: '',
+                dataList: [],
+                noProject: true
+              })
+            } else {
+              _this.setData({
+                navbar: navbar,
+                currentTab: navbar[0],
+                dataList: dataList
+              })
+            }
+          } else {
+            _this.setData({
+              navbar: [],
+              currentTab: '',
+              dataList: [],
+              noProject: true
+            })
+          }
+        } else {
+          wx.showToast({
+            title: '网络请求失败,请稍后再试',
+            icon: 'none',
+            duration: 3000
+          })
+        }
+      }
+    });
   },
 
   /**
@@ -87,6 +171,7 @@ Page({
     wx.removeStorageSync('sessionKey');
     wx.removeStorageSync('phoneNumber');
     wx.removeStorageSync('avatarUrl');
+    wx.removeStorageSync('nickName');
     wx.login({
       success: res => {
         //发送 res.code 到后台换取 openId, sessionKey, unionId

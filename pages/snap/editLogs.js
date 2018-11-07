@@ -35,7 +35,6 @@ Page({
    */
   onLoad: function (options) {
     _this = this;
-    let date = dateformat.format(new Date(), 'yyyy-MM-dd');
     if (options.src) {
       let images = [];
       images.push(options.src);
@@ -47,7 +46,6 @@ Page({
         url: getApp().globalData.api + 'welogTaskController/resId',
         data: {
           resId: wx.getStorageSync('phoneNumber'),
-          taskDate: date
         },
         header: {
           'content-type': 'application/json'

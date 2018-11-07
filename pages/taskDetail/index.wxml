@@ -15,7 +15,7 @@
   </view>
 </view>
 
-  <scroll-view scroll-x="true" style="height:46px;" >
+  <scroll-view class='scroll-view-x' scroll-x="true">
   <view class="tab-navbar" >
     <view wx:for="{{navbar}}" data-title="{{item}}"  wx:key="unique" bindtap="navbarTap" class="item {{currentTab==item ? 'active' : ''}}" >
         {{item}}
