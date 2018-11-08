@@ -1,4 +1,5 @@
 {
+  "navigationBarTitleText": "随手抓拍",
   "usingComponents": {
     "i-button": "../../dist/button/index"
   }

@@ -1,5 +1,5 @@
 {
-    "navigationBarTitleText": "萬德通工程日志",
+    "navigationBarTitleText": "工程管理日志",
     "usingComponents": {
       "i-badge": "../../dist/badge/index"
     }

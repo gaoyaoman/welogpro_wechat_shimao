@@ -19,7 +19,7 @@
 		"backgroundTextStyle": "light",
 		"navigationBarBackgroundColor": "#1860be",
 		"navigationBarTextStyle": "white",
-		"navigationBarTitleText": "萬德通工程日志"
+		"navigationBarTitleText": "工程管理日志"
 	},
 	"tabBar": {
 		"color": "#bfbfbf",
