@@ -49,26 +49,19 @@ Page({
         if (res.errMsg === "request:ok") {
           if (res.data !== 'no task') {
             let navbar = [], dataList = [];
-            let list1 = [], list2 = [], list3 = [];
+            let list = []
             for (let i = 0; i < res.data.length; i++) {
               if (res.data[i].length !== 0) {
                 for (let j = 0; j < res.data[i].length; j++) {
                   if (navbar.indexOf(res.data[i][j].projectName) == -1) {
                     navbar.unshift(res.data[i][j].projectName) //在res中提取projectName构建navbar
                   }
-                  if (!res.data[i][j].type || res.data[i][j].type === '1') {
-                    list2.push(res.data[i][j])
-                  } else if (res.data[i][j].type === '3') {
-                    list3.push(res.data[i][j])
-                  } else {
-                    list1.push(res.data[i][j])
-                  }
+                list.push(res.data[i][j])
+
                 }
               }
             }
-            dataList = dataList.concat(list1);//整改
-            dataList = dataList.concat(list2);//填报
-            dataList = dataList.concat(list3);//完成
+            dataList = dataList.concat(list);
             for (let i = 0; i < dataList.length; i++) {
               dataList[i].startDate = dateformat.format(new Date(dataList[i].startDate), 'yyyy/MM/dd');
               dataList[i].endDate = dateformat.format(new Date(dataList[i].endDate), 'yyyy/MM/dd');

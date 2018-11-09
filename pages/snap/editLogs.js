@@ -19,15 +19,18 @@ Page({
     ifPicker:false,   //项目Picker
     ifPicker2:false,  //任务Picker
     ifPicker3:false,  //类型Picker
-		// ifPicker4: false,  //类型状态Picker
     textInfo:'',
     taskType:'',
     taskStatus:'',
     loading:false,
     typeList:['进度','质量','安全'],
-    statusList:['正在进行','需整改','完成'],
-    href:0,
-    id:''
+    statusList: ['未开始','进行中','节点验收中','节点验收完成','需整改','整改中','整改完成','任务最终完成'],
+    href:0, //从哪跳转来：1随手抓拍 2任务列表
+    id:'',
+    note:null,  //选择分类后的附加内容说明
+    noteSafeList: ['文明巡检','用电巡检','临边巡检','危险品巡检','安全设施巡检','安全配备巡检'],
+    noteSafe:null,
+    noteSchedule:null
   },
 
   /** 
@@ -35,6 +38,7 @@ Page({
    */
   onLoad: function (options) {
     _this = this;
+    //入口随手抓拍
     if (options.src) {
       let images = [];
       images.push(options.src);
@@ -52,7 +56,6 @@ Page({
         },
         success(res) {
           //备注:后端查不到数据返回"no task"
-          console.log('res',res)
           if (res.errMsg === "request:ok") {
             if (res.data === "no task") {
               _this.setData({
@@ -92,27 +95,6 @@ Page({
                 list: list2,
                 idList:list3
               })
-							// console.log('存储所有的id', _this.data.idList)
-              // if (list1.length === 1) {
-              //   _this.setData({
-              //     projectName: list1[0]
-              //   })
-              //   for (let i = 0; i < _this.data.list.length; i++) {
-              //     if (_this.data.list[i].projectName === _this.data.projectName) {
-              //       _this.setData({
-              //         taskList: _this.data.list[i].children
-              //       })
-              //     }
-              //   }
-              //   if (list2[0].children.length === 1) {
-              //     _this.setData({
-              //       task: list2[0].children[0],
-              //       id:list3[0].children[0].id,
-              //       ifPicker1: true,
-              //       ifPicker2: true
-              //     })
-              //   }
-              // }
             }
           } else {
             wx.showToast({
@@ -125,7 +107,7 @@ Page({
         }
       });
     } else {
-			let taskStatus='';
+			let taskStatus='',note;
 			if (options.status==='1'){
 				taskStatus = '正在进行'
 			} else if (options.status === '2'){
@@ -133,16 +115,25 @@ Page({
 			}else{
 				taskStatus = '已完成'
 			}
+      switch (options.taskType) {
+        case "质量":
+          note = '填写质量检查数据:';
+          break;
+        case '进度':
+          note = '填写进度数据:';
+          break;
+        case '安全':
+          note = '选择巡检类型:'
+      }
       _this.setData({
         projectName: options.projectName,
         task: options.tastText,
         id:options.id,
 				taskType: options.taskType,
-				// taskStatus: taskStatus,
+        note: note,
         ifPicker1: true,
         ifPicker2: true,
 				ifPicker3: true,
-				// ifPicker4: true,
         href:2
       });
     }
@@ -249,29 +240,53 @@ Page({
           idListTemp: _this.data.idList[i].children
         })
       }
-			// console.log('i',i)
-			// console.log('临时存储当前项目的idListTemp', _this.data.idList[i].children)
     }
   },
+  //选择任务
   selectTask:function(e){
-		// console.log('e.detail.value', e.detail.value)
-		// console.log('_this.data.idListTemp', _this.data.idListTemp)
-		// console.log('_this.data.idListTemp', _this.data.idListTemp[e.detail.value])
     _this.setData({
       task: _this.data.taskList[e.detail.value],
       id: _this.data.idListTemp[e.detail.value].id
     });
   },
+  //选择类型：质量、安全、进度
   selectType:function(e){
+    let note=null,
+        taskType = _this.data.typeList[e.detail.value];
+    switch (taskType){
+      case "质量":
+        note ='填写质量检查数据:';
+        break;
+      case '进度':
+        note='填写进度数据:';
+        break;
+      case '安全':
+        note='选择巡检类型:'
+    }
     _this.setData({
-      taskType: _this.data.typeList[e.detail.value]
+      taskType: _this.data.typeList[e.detail.value],
+      note:note
     });
   },
+  //选择安全巡检项
+  selectNoteSafe: function (e) {
+    _this.setData({
+      noteSafe: _this.data.noteSafeList[e.detail.value]
+    });
+  },
+  //填写进度信息
+  inputNoteSchedule: function(e){
+    _this.setData({
+      noteSchedule: e.detail.detail.value
+    })
+  },
+  //选择任务状态：未开始、进行中、节点验收中、节点验收完成、需整改、整改中、整改完成、任务最终完成
   selectStatus: function (e) {
     _this.setData({
       taskStatus: _this.data.statusList[e.detail.value]
     });
   },
+  //图片描述文字录入
   textChange:function(e){
     _this.setData({
       textInfo: e.detail.detail.value
@@ -335,17 +350,20 @@ Page({
       })
       return false;
     }
-		let imgData = wx.getFileSystemManager().readFileSync(_this.data.images[0], "base64"), //图片
+		let imgData = wx.getFileSystemManager().readFileSync(_this.data.images[0], "base64"), //图片数据
       text = _this.data.textInfo,	//图片说明
       time = new Date().getTime(),	//上传时间
       phoneNumber = wx.getStorageSync('phoneNumber'), //手机号码
       projectName = _this.data.projectName,//项目名称
       task = _this.data.task,	//任务名称
       taskType=_this.data.taskType,	//任务类型：质量、安全、进度
-      taskStatus=_this.data.taskStatus,	//任务状态：正在进行、需整改、已完成
+      taskStatus = _this.data.taskStatus,	//任务状态：未开始、进行中、节点验收中、节点验收完成、需整改、整改中、整改完成、任务最终最终完成
       id = _this.data.id;	//数据库中存储任务的主键 id
-
-    let log = JSON.stringify({ time, text, imgData, task, phoneNumber, projectName ,taskType,taskStatus});
+    let log = null;
+    if (taskType==='安全'){
+      let noteSafe=_this.data.noteSafe;
+      log = JSON.stringify({ time, text, imgData, task, phoneNumber, projectName, taskType, taskStatus, noteSafe});
+    }
     _this.setData({
       loading: true
     })

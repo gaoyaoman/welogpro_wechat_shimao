@@ -1,8 +1,8 @@
 <view>
-  <i-panel title="文字说明">
+  <i-panel title="文字说明:">
     <i-input value="{{textInfo}}" bind:change="textChange" type="textarea" placeholder="文字说明内容" />
   </i-panel>
-  <i-panel title="图片摘要">
+  <i-panel title="图片摘要:">
     <view class="gallery">
       <view class="item" wx:for="{{images}}" wx:key="">
           <image src="{{item}}" data-src="{{item}}" bindtap="previewImage" mode="aspectFill" />
@@ -15,33 +15,54 @@
       </view>
     </view>
   </i-panel> 
-  <i-panel title="选择分类">
-    <picker bindchange="selectType" value="{{index}}" range="{{typeList}}" disabled='{{ifPicker3}}'>
-    <view class="picker">
-      <text class='task-selected'>{{taskType?taskType:'未选择'}}</text>
-    </view>
-  </picker>
-  </i-panel>
-  <i-panel title="选择状态类型">
+  <i-panel title="选择状态类型:">
     <picker bindchange="selectStatus" value="{{index}}" range="{{statusList}}" >
     <view class="picker">
       <text class='task-selected'>{{taskStatus?taskStatus:'未选择'}}</text>
     </view>
   </picker>
   </i-panel>
-  <i-panel title="选择项目">
+  <i-panel title="选择项目:">
     <picker bindchange="selectProject" value="{{index}}" range="{{projectList}}" disabled='{{ifPicker1}}'>
     <view class="picker">
       <text class='task-selected'>{{projectName?projectName:'未选择'}}</text>
     </view>
   </picker>
   </i-panel>
-  <i-panel title="选择任务" wx-if="{{projectName}}">
+  <i-panel title="选择任务:" wx-if="{{projectName}}">
     <picker bindchange="selectTask" value="{{index}}" range="{{taskList}}" disabled='{{ifPicker2}}'>
     <view class="picker">
       <text class='task-selected'>{{task?task:'未选择'}}</text>
     </view>
   </picker>
   </i-panel>
+  <i-panel title="选择分类:">
+    <picker bindchange="selectType" value="{{index}}" range="{{typeList}}" disabled='{{ifPicker3}}'>
+    <view class="picker">
+      <text class='task-selected'>{{taskType?taskType:'未选择'}}</text>
+    </view>
+  </picker>
+  </i-panel>
+  <view wx:if="{{!!note}}">
+  <i-panel title="{{note}}">
+    <!-- 安全 -->
+    <view wx-if="{{taskType==='安全'}}">
+      <picker bindchange="selectNoteSafe" value="{{index}}" range="{{noteSafeList}}">
+        <view class="picker">
+          <text class='task-selected'>{{noteSafe?noteSafe:'未选择'}}</text>
+        </view>
+      </picker>
+    </view>
+    <!-- 进度 -->
+    <view wx-if="{{taskType==='进度'}}">
+      <i-input value="{{noteSchedule}}" title="" type="number" autofocus placeholder="0~100" bind:change="inputNoteSchedule"/>
+    </view>
+    <!-- 质量 -->
+    <view wx-if="{{taskType==='质量'}}">
+    
+    </view>
+  </i-panel>
+  </view>
+  
   <i-button type="primary" bind:click="saveData" i-class="submit-btn" loading="{{loading}}">提交日志</i-button>
 </view>
