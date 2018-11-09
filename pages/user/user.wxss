@@ -93,10 +93,10 @@
 }
 .no-project{
   font-size:18px;
-  margin-top:40px;
   display:flex;
   justify-content:center;
   color:#ccc;
+  margin-bottom: 60rpx;
 }
 .today{
   font-size:16px;

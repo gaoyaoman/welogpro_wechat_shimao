@@ -126,7 +126,7 @@ Page({
 				success(res) {
 					if (res.errMsg === "request:ok") {
 						let role = res.data.data[0].note;
-						if (role === null) {
+						if (!role) {
 							return true;
 						}
 						//判断用户role字符串是否含有含有相应的子字符串
@@ -145,10 +145,6 @@ Page({
 								safe: true
 							})
 						}
-						// console.log(_this.data.quality, _this.data.shcedule, _this.data.safe);
-						// console.log('quality', _this.data.quality)
-						// console.log('shcedule', _this.data.shcedule )
-						// console.log('safe', _this.data.safe)
 						wx.request({
 							url: App.globalData.api + 'welogTaskController/resId',
 							data: {

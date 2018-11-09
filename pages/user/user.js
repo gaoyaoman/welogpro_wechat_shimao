@@ -50,11 +50,15 @@ Page({
         'content-type': 'application/json'
       },
       success(res) {
-        if (res.errMsg === "request:ok") {
-          let role = res.data.data[0].note.split(',');
-          _this.setData({
-            roles: role
-          })
+        if (res.errMsg === "request:ok") {          
+          let role = res.data.data[0].note;
+          if(!role){
+            return;
+          }else{
+            _this.setData({
+              roles: role.split(',')
+            })
+          }
           console.log('role',role)
         } else {
           wx.showToast({
@@ -95,8 +99,6 @@ Page({
               dataList[i].startDate = dateformat.format(new Date(dataList[i].startDate), 'yyyy/MM/dd');
               dataList[i].endDate = dateformat.format(new Date(dataList[i].endDate), 'yyyy/MM/dd');
             }
-            //console.log('navbar', navbar);//navbar
-            //console.log('dataList', dataList)//navbar的数据项
             if (navbar.length === 0) {
               _this.setData({
                 navbar: [],
