@@ -8,29 +8,29 @@ Page({
    */
   data: {
     src:[],
-    images: [],
-    list:[],
-    idList:[],
-    idListTemp:[],
-    projectList:[],
-    taskList:[],
-    task:null,
-    projectName: null,
+    images: [], //图片路径
+    list:[],  
+    idList:[],  //任务主键列表
+    idListTemp:[],  
+    projectList:[], //项目列表
+    taskList:[],  //任务列表
+    task:null,  //任务名称
+    projectName: null, //项目名称
     ifPicker:false,   //项目Picker
     ifPicker2:false,  //任务Picker
     ifPicker3:false,  //类型Picker
-    textInfo:'',
-    taskType:'',
-    taskStatus:'',
-    loading:false,
-    typeList:['进度','质量','安全'],
-    statusList: ['未开始','进行中','节点验收中','节点验收完成','需整改','整改中','整改完成','任务最终完成'],
+    textInfo:'', //图片描述
+    taskType:'',  //任务类型
+    taskStatus:'', //任务状态
+    loading:false,  //提交loading
+    typeList:['进度','质量','安全'], //任务类型维度备选项
+    statusList: ['未开始','进行中','节点验收中','节点验收完成','需整改','整改中','整改完成','任务最终完成'], //任务状态备选项
     href:0, //从哪跳转来：1随手抓拍 2任务列表
-    id:'',
+    id:'',  //任务在数据库中的主键
     note:null,  //选择分类后的附加内容说明
-    noteSafeList: ['文明巡检','用电巡检','临边巡检','危险品巡检','安全设施巡检','安全配备巡检'],
-    noteSafe:null,
-    noteSchedule:null
+    noteSafeList: ['文明巡检','用电巡检','临边巡检','危险品巡检','安全设施巡检','安全配备巡检'],//安全巡检备选项
+    noteSafe:null,//安全维度附加项
+    noteSchedule:null //进度维度附加项
   },
 
   /** 
@@ -65,6 +65,7 @@ Page({
                 task: '当日无任务记录'
               });
             } else {
+              //c用来过滤传来的数组有空的情况
               let list1 = [], list2 = [],list3=[], data = res.data,c=0;
               for (let i = 0; i < data.length; i++) {
                 if (data[i].length === 0){
@@ -217,6 +218,7 @@ Page({
       urls: this.data.images
     })
   },
+  //删除图片
   deleteImg: function (e) {
     let index = e.currentTarget.dataset.index; 
     let images = _this.data.images;
@@ -258,7 +260,7 @@ Page({
         note ='填写质量检查数据:';
         break;
       case '进度':
-        note='填写进度数据:';
+        note='填写进度百分比:';
         break;
       case '安全':
         note='选择巡检类型:'
@@ -310,14 +312,6 @@ Page({
       })
       return false;
     }
-    if (!_this.data.taskType) {
-      wx.showToast({
-        title: '请选择任务分类',
-        icon: 'none',
-        duration: 2000
-      })
-      return false;
-    }
     if (!_this.data.taskStatus) {
       wx.showToast({
         title: '请选择任务状态类型',
@@ -350,19 +344,61 @@ Page({
       })
       return false;
     }
+    if (!_this.data.taskType) {
+      wx.showToast({
+        title: '请选择任务分类',
+        icon: 'none',
+        duration: 2000
+      })
+      return false;
+    }
+    if (_this.data.taskType==='安全'){
+      if (!_this.data.noteSafe){
+        wx.showToast({
+          title: '请选择安全巡检类型',
+          icon: 'none',
+          duration: 2000
+        })
+        return false;
+      }
+    }
+    if (_this.data.taskType === '进度') {
+      let ns = _this.data.noteSchedule;
+      if (!ns) {
+        wx.showToast({
+          title: '请填写进度百分比',
+          icon: 'none',
+          duration: 2000
+        })
+        return false;
+      }else{
+        if (ns*1<0||ns*1>100){
+          wx.showToast({
+            title: '进度百分比需在0～100之间',
+            icon: 'none',
+            duration: 2000
+          })
+          return false;
+        }
+      }
+    }
+
 		let imgData = wx.getFileSystemManager().readFileSync(_this.data.images[0], "base64"), //图片数据
-      text = _this.data.textInfo,	//图片说明
-      time = new Date().getTime(),	//上传时间
-      phoneNumber = wx.getStorageSync('phoneNumber'), //手机号码
-      projectName = _this.data.projectName,//项目名称
-      task = _this.data.task,	//任务名称
-      taskType=_this.data.taskType,	//任务类型：质量、安全、进度
-      taskStatus = _this.data.taskStatus,	//任务状态：未开始、进行中、节点验收中、节点验收完成、需整改、整改中、整改完成、任务最终最终完成
-      id = _this.data.id;	//数据库中存储任务的主键 id
-    let log = null;
+        text = _this.data.textInfo,	//图片说明
+        time = new Date().getTime(),	//上传时间
+        phoneNumber = wx.getStorageSync('phoneNumber'), //手机号码
+        projectName = _this.data.projectName,//项目名称
+        task = _this.data.task,	//任务名称
+        taskType=_this.data.taskType,	//任务类型：质量、安全、进度
+        taskStatus = _this.data.taskStatus,	//任务状态：未开始、进行中、节点验收中、节点验收完成、需整改、整改中、整改完成、任务最终最终完成
+        id = _this.data.id,	//数据库中存储任务的主键 id
+        log = null; //参数
     if (taskType==='安全'){
       let noteSafe=_this.data.noteSafe;
       log = JSON.stringify({ time, text, imgData, task, phoneNumber, projectName, taskType, taskStatus, noteSafe});
+    } else if (taskType==='进度'){
+      let noteSchedule = _this.data.noteSchedule;
+      log = JSON.stringify({ time, text, imgData, task, phoneNumber, projectName, taskType, taskStatus, noteSchedule });
     }
     _this.setData({
       loading: true
