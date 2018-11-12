@@ -18,7 +18,13 @@
 	<i-panel title="金额">
     <i-input value="{{price}}" type="number" title="" placeholder="输入金额" bind:change="changePrice"/>
   </i-panel>
-
+  <i-panel title="选择类型">
+    <picker bindchange="selectType" value="{{index}}" range="{{typeList}}">
+    <view class="picker">
+      <text class='task-selected'>{{type?type:'未选择'}}</text>
+    </view>
+  </picker>
+  </i-panel>
   <i-panel title="选择项目">
     <picker bindchange="selectProject" value="{{index}}" range="{{projectList}}" disabled='{{ifPicker1}}'>
     <view class="picker">
