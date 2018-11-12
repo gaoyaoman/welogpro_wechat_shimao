@@ -120,7 +120,7 @@ Page({
           note = '填写质量检查数据:';
           break;
         case '进度':
-          note = '填写进度数据:';
+          note = '填写累计完成率:';
           break;
         case '安全':
           note = '选择巡检类型:'
@@ -259,7 +259,7 @@ Page({
         note ='填写质量检查数据:';
         break;
       case '进度':
-        note='填写进度百分比:';
+        note='填写累计完成率:';
         break;
       case '安全':
         note='选择巡检类型:'
@@ -365,7 +365,7 @@ Page({
       let ns = _this.data.noteSchedule;
       if (!ns) {
         wx.showToast({
-          title: '请填写进度百分比',
+          title: '请填写累计完成率',
           icon: 'none',
           duration: 2000
         })
