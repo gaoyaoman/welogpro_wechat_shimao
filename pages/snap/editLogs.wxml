@@ -43,7 +43,7 @@
     </view>
   </picker>
   </i-panel>
-  <view wx:if="{{!!note}}">
+  <view wx:if="{{!!note&&taskType!=='质量'}}">
   <i-panel title="{{note}}">
     <!-- 安全 -->
     <view wx-if="{{taskType==='安全'}}">
