@@ -1,13 +1,10 @@
 //app.js
 App({
-  // siteinfo:require('siteinfo.js'),
   /**
    * 当小程序初始化完成时，会触发 onLaunch（全局只触发一次）
    */
   onLaunch: function () {
     //更新版本
-    // getApp().globalData.api=this.siteinfo.base_url;
-    // console.log('this.siteinfo.base_url', this.siteinfo);
     let _this = this;
     const updateManager = wx.getUpdateManager()
     updateManager.onCheckForUpdate(function (res) {
@@ -102,8 +99,8 @@ App({
     })
   },
   globalData: {
-    // api: 'https://wxss.andyxin.cn/jeecg/rest/',
-    api: 'https://wxss.welogpro.com/jeecg/rest/',
+    api: 'https://wxss.andyxin.cn/jeecg/rest/',
+    // api: 'https://wxss.welogpro.com/jeecg/rest/',
     userInfo: null,
     projectDay:null,
     ifFromMonth:false,

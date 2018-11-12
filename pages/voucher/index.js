@@ -227,11 +227,6 @@ Page({
 			id: _this.data.idListTemp[e.detail.value].id
 		});
 	},
-	// selectType: function (e) {
-	// 	_this.setData({
-	// 		taskType: _this.data.typeList[e.detail.value]
-	// 	});
-	// },
 	changePrice:function(e){
 		_this.setData({
 			price: e.detail.detail.value
