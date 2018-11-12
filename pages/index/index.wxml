@@ -98,8 +98,8 @@
           </view>
         </view>
       </view>
-		</navigator>
-    	<!--微信公众号组件  -->
+        </navigator>
+      <!--微信公众号组件  -->
     <official-account></official-account>		
   </view>
 </view>
