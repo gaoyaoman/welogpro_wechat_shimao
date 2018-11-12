@@ -32,7 +32,6 @@ Page({
     noteSafe:null,//安全维度附加项
     noteSchedule:null //进度维度附加项
   },
-
   /** 
    * 生命周期函数--监听页面加载
    */
