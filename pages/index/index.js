@@ -162,17 +162,17 @@ Page({
 											if (res1.data[i].length !== 0) {
 												for (let j = 0; j < res1.data[i].length; j++) {
 													if (_this.data.quality) {
-														if (!res1.data[i][j].qualityStatus || res1.data[i][j].qualityStatus === '1' || res1.data[i][j].qualityStatus === '2') {
+                            if (res1.data[i][j].qualityType!=='7') {
 															todo = todo + 1;
 														}
 													}
 													if (_this.data.shcedule) {
-														if (!res1.data[i][j].shceduleStatus || res1.data[i][j].shceduleStatus === '1' || res1.data[i][j].shceduleStatus === '2') {
+														if (res1.data[i][j].shceduleType !== '7') {
 															todo = todo + 1;
 														}
 													}
 													if (_this.data.safe) {
-														if (!res1.data[i][j].safeStatus || res1.data[i][j].safeStatus === '1' || res1.data[i][j].safeStatus === '2') {
+														if (res1.data[i][j].safeType !== '7') {
 															todo = todo + 1;
 														}
 													}
@@ -201,7 +201,14 @@ Page({
 					}
 				}
 			});
-      
     }
-  }
+  },
+  onShareAppMessage: function () {
+    return {
+      title: '工程日志管理', // 转发后 所显示的title
+      path: '/pages/index/index', // 相对的路径
+      imageUrl:'../../image/logo.jpeg'
+    }
+  },
+
 })

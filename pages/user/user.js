@@ -160,11 +160,22 @@ Page({
   
   },
 
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function () {
-  
+  navbarTap: function (e) {
+    this.setData({
+      currentTab: e.currentTarget.dataset.title,
+    })
+    for (let i = 0; i < this.data.dataList.length; i++) {
+      if (this.data.dataList[i].projectName == this.data.currentTab) {
+        this.setData({
+          noProject: false
+        })
+        return true;
+      } else {
+        this.setData({
+          noProject: true
+        })
+      }
+    }
   },
   //自定义方法：
   //注销登陆

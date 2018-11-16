@@ -151,5 +151,10 @@
 .message{
   font-size:28rpx;
   color:#ccc;
+}
 
+.oa{
+  position: absolute;
+  bottom: 0;
+  width: calc(100vw);
 }

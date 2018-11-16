@@ -250,13 +250,6 @@ Page({
   onReachBottom: function () {
 
   },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function () {
-
-  },
   //显示详细工程
   projectInfo:function(e){
     App.globalData.projectDay = e.target.dataset.index.isToday;

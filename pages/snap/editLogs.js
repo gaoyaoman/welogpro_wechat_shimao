@@ -107,13 +107,9 @@ Page({
         }
       });
     } else {
-			let taskStatus='',note;
-			if (options.status==='1'){
-				taskStatus = '正在进行'
-			} else if (options.status === '2'){
-				taskStatus = '正在进行'
-			}else{
-				taskStatus = '已完成'
+			let ifGetImg='',note;
+			if (options.status==='4'){
+        ifGetImg = '正在进行'
 			}
       switch (options.taskType) {
         case "质量":
@@ -125,67 +121,39 @@ Page({
         case '安全':
           note = '选择巡检类型:'
       }
-      _this.setData({
-        projectName: options.projectName,
-        task: options.tastText,
-        id:options.id,
-				taskType: options.taskType,
-        note: note,
-        ifPicker1: true,
-        ifPicker2: true,
-				ifPicker3: true,
-        href:2
+      wx.request({
+        url: getApp().globalData.api + 'welogTaskController/getWorkLogImg',
+        data: {
+          task: options.tastText,
+          projectName: options.projectName,
+          type: options.taskType
+        },
+        header: {
+          'content-type': 'application/json'
+        },
+        success(res) {
+          //备注:后端查不到数据返回"no task"
+          if (res.errMsg === "request:ok") {
+            
+            console.log(res.data);
+
+
+            _this.setData({
+              projectName: options.projectName,
+              task: options.tastText,
+              id: options.id,
+              taskType: options.taskType,
+              note: note,
+              ifPicker1: true,
+              ifPicker2: true,
+              ifPicker3: true,
+              href: 2
+            });
+          }
+        }
       });
+
     }
-  },
-
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
-
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function () {
-
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function () {
-
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function () {
-
   },
   chooseImage: function () {
     // 选择图片
@@ -391,10 +359,11 @@ Page({
         taskType=_this.data.taskType,	//任务类型：质量、安全、进度
         taskStatus = _this.data.taskStatus,	//任务状态：未开始、进行中、节点验收中、节点验收完成、需整改、整改中、整改完成、任务最终最终完成
         id = _this.data.id,	//数据库中存储任务的主键 id
+        imgQuality = '', //预留参数：照片状态
         log = null; //参数
     if (taskType==='安全'){
       let noteSafe=_this.data.noteSafe;
-      log = JSON.stringify({ time, text, imgData, task, phoneNumber, projectName, taskType, taskStatus, noteSafe});
+      log = JSON.stringify({ time, text, imgData, task, phoneNumber, projectName, taskType, taskStatus, noteSafe });
     } else if (taskType==='进度'){
       let noteSchedule = _this.data.noteSchedule;
       log = JSON.stringify({ time, text, imgData, task, phoneNumber, projectName, taskType, taskStatus, noteSchedule });
@@ -414,11 +383,31 @@ Page({
       },
       success(res) {
         if(res.data==="success"){
-          if (taskStatus === '正在进行' || taskStatus === '需整改'){
-            taskStatus = 1;
-          }
-          else{
-            taskStatus = 3;
+          switch (taskStatus){
+            case '进行中':
+              taskStatus = '1';
+              break;
+            case '节点验收中':
+              taskStatus = '2';
+              break;
+            case '节点验收完成':
+              taskStatus = '3';
+              break;
+            case '需整改':
+              taskStatus = '4';
+              break;
+            case '整改中':
+              taskStatus = '5';
+              break;
+            case '整改完成':
+              taskStatus = '6';
+              break;
+            case '任务最终完成':
+              taskStatus = '7';
+              break;
+            case '未开始':
+              taskStatus = '8';
+              break;
           }
           wx.request({
             url: getApp().globalData.api +'welogTaskController/updateWelogTaskType',

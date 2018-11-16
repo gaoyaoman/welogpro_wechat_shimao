@@ -1,7 +1,7 @@
 /* pages/taskDetail/index.wxss */
 .scroll-view-x{
   height: 45rpx;
-  padding:20rpx 20rpx 0 20rpx;
+  padding-top: 20rpx; 
 }
 .tab-navbar{
   display: flex;
@@ -10,7 +10,7 @@
   align-items: center;
 }
 .tab-navbar view{
-  margin:0 10rpx;
+  margin:0 20rpx;
   font-size: 30rpx;  
 }
 .item.active{
@@ -27,7 +27,11 @@ button{
   line-height: 50rpx !important;
 }
 .sub-btn{
-    background-color: #22A7F6 !important;
+  background-color: #2d8cf0 !important;
+}
+.sub-btn-warn{
+  background-color: #ff9900 !important;
+
 }
 .project-content{
   display:flex;
