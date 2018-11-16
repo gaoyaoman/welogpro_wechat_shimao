@@ -1,5 +1,5 @@
 // pages/editLogs/editLogs.js
-let dateformat = require('../../utils/dateFormat.js');
+// let dateformat = require('../../utils/dateFormat.js');
 let _this;
 Page({
 
@@ -13,6 +13,8 @@ Page({
 		idList: [],
 		idListTemp: [],
 		projectList: [],
+    typeList: ['人力','材料','机械','管理','措施','规费'],
+    type:null,
 		taskList: [],
 		task: null,
 		projectName: null,
@@ -32,12 +34,11 @@ Page({
    */
 	onLoad: function (options) {
 		_this = this;
-		let date = dateformat.format(new Date(), 'yyyy-MM-dd');
+		// let date = dateformat.format(new Date(), 'yyyy-MM-dd');
 			wx.request({
 				url: getApp().globalData.api + 'welogTaskController/resId',
 				data: {
 					resId: wx.getStorageSync('phoneNumber'),
-					taskDate: date
 				},
 				header: {
 					'content-type': 'application/json'
@@ -84,26 +85,6 @@ Page({
 								list: list2,
 								idList: list3
 							})
-							// if (list1.length === 1) {
-							// 	_this.setData({
-							// 		projectName: list1[0]
-							// 	})
-							// 	for (let i = 0; i < _this.data.list.length; i++) {
-							// 		if (_this.data.list[i].projectName === _this.data.projectName) {
-							// 			_this.setData({
-							// 				taskList: _this.data.list[i].children
-							// 			})
-							// 		}
-							// 	}
-							// 	if (list2[0].children.length === 1) {
-							// 		_this.setData({
-							// 			task: list2[0].children[0],
-							// 			id: list3[0].children[0].id,
-							// 			ifPicker1: true,
-							// 			ifPicker2: true
-							// 		})
-							// 	}
-							// }
 						}
 					} else {
 						wx.showToast({
@@ -206,6 +187,12 @@ Page({
 			count: count
 		});
 	},
+  //选择费用分类：人力、材料、机械、管理、措施、规费
+  selectType:function(e){
+    _this.setData({
+      type: _this.data.typeList[e.detail.value]
+    })
+  },
 	//选择任务
 	selectProject: function (e) {
 		_this.setData({
@@ -255,14 +242,14 @@ Page({
 			})
 			return false;
 		}
-		// if (!_this.data.taskType) {
-		// 	wx.showToast({
-		// 		title: '请选择任务分类',
-		// 		icon: 'none',
-		// 		duration: 2000
-		// 	})
-		// 	return false;
-		// }
+		if (!_this.data.type) {
+			wx.showToast({
+				title: '请选择分类',
+				icon: 'none',
+				duration: 2000
+			})
+			return false;
+		}
 		if (!_this.data.price) {
 			wx.showToast({
 				title: '请填写金额',
@@ -302,9 +289,10 @@ Page({
 			projectName = _this.data.projectName,
 			task = _this.data.task,
 			taskType = _this.data.taskType,
+      type= _this.data.type,
 			price=_this.data.price;
-		let log = JSON.stringify({ time, text, imgData, task, phoneNumber, projectName, taskType, price });
-		// console.log(log);
+		let log = JSON.stringify({ time, text, imgData, task, phoneNumber, projectName, taskType, type, price });
+		console.log(log);
 		_this.setData({
 			loading: true
 		})
