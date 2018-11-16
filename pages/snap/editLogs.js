@@ -7,6 +7,12 @@ Page({
    * 页面的初始数据
    */
   data: {
+    comparison:{  //整改对比照片
+      status:false,
+      src:'',
+      ifNull: false,
+      base64:''
+    },
     src:[],
     images: [], //图片路径
     list:[],  
@@ -107,9 +113,50 @@ Page({
         }
       });
     } else {
-			let ifGetImg='',note;
+			let note;
 			if (options.status==='4'){
-        ifGetImg = '正在进行'
+        wx.request({
+          url: getApp().globalData.api + 'welogTaskController/getWorkLogImg',
+          data: {
+            task: options.tastText,
+            projectName: options.projectName,
+            type: options.taskType,
+            phoneNumber: wx.getStorageSync("phoneNumber")
+          },
+          header: {
+            'content-type': 'application/json'
+          },
+          success(res) {
+            //备注:后端查不到数据返回"no task"
+            if (res.errMsg === "request:ok") {
+              if(res.data.img){
+                let base64 = 'data:image/jpeg;base64,'+res.data.img;//base64格式图片
+                let imgPath = wx.env.USER_DATA_PATH + '/comparison_' + new Date().getTime() + '.jpeg';
+                //如果图片字符串不含要清空的前缀,可以不执行下行代码.
+                let imageData = base64.replace(/^data:image\/\w+;base64,/, "");
+                let fs = wx.getFileSystemManager();
+                fs.writeFileSync(imgPath, imageData, "base64");
+                _this.setData({
+                  comparison: {
+                    status: true,
+                    src:  imgPath,
+                    ifNull:false,
+                    base64: res.data.img
+                  }
+                })
+              }else{
+                _this.setData({
+                  comparison: {
+                    status: true,
+                    src: '',
+                    ifNull: true,
+                    base64:''
+                  }
+                })
+              }
+            }
+          }
+        });
 			}
       switch (options.taskType) {
         case "质量":
@@ -121,38 +168,17 @@ Page({
         case '安全':
           note = '选择巡检类型:'
       }
-      wx.request({
-        url: getApp().globalData.api + 'welogTaskController/getWorkLogImg',
-        data: {
-          task: options.tastText,
-          projectName: options.projectName,
-          type: options.taskType
-        },
-        header: {
-          'content-type': 'application/json'
-        },
-        success(res) {
-          //备注:后端查不到数据返回"no task"
-          if (res.errMsg === "request:ok") {
-            
-            console.log(res.data);
-
-
-            _this.setData({
-              projectName: options.projectName,
-              task: options.tastText,
-              id: options.id,
-              taskType: options.taskType,
-              note: note,
-              ifPicker1: true,
-              ifPicker2: true,
-              ifPicker3: true,
-              href: 2
-            });
-          }
-        }
+      _this.setData({
+        projectName: options.projectName,
+        task: options.tastText,
+        id: options.id,
+        taskType: options.taskType,
+        note: note,
+        ifPicker1: true,
+        ifPicker2: true,
+        ifPicker3: true,
+        href: 2
       });
-
     }
   },
   chooseImage: function () {
@@ -183,6 +209,15 @@ Page({
     wx.previewImage({
       current: current,
       urls: this.data.images
+    })
+  },
+  previewImageCp:function(e){
+    let current = e.target.dataset.src
+    let arr=[];
+    arr.push(current);
+    wx.previewImage({
+      current: current,
+      urls: arr
     })
   },
   //删除图片
@@ -360,14 +395,41 @@ Page({
         taskStatus = _this.data.taskStatus,	//任务状态：未开始、进行中、节点验收中、节点验收完成、需整改、整改中、整改完成、任务最终最终完成
         id = _this.data.id,	//数据库中存储任务的主键 id
         imgQuality = '', //预留参数：照片状态
+        taskStatusAdmin = _this.data.taskStatus,//预留参数：管理员修改任务的状态
+        noteSafe = null,
+        noteSchedule = null,
+        noteQuality = null,
+        imgComparison = ''
+
         log = null; //参数
-    if (taskType==='安全'){
-      let noteSafe=_this.data.noteSafe;
-      log = JSON.stringify({ time, text, imgData, task, phoneNumber, projectName, taskType, taskStatus, noteSafe });
-    } else if (taskType==='进度'){
-      let noteSchedule = _this.data.noteSchedule;
-      log = JSON.stringify({ time, text, imgData, task, phoneNumber, projectName, taskType, taskStatus, noteSchedule });
+    if (_this.data.comparison.status){
+      imgComparison = _this.data.comparison.base64;
     }
+    if (taskType==='安全'){
+      noteSafe=_this.data.noteSafe;
+    } else if (taskType==='进度'){
+      noteSchedule = _this.data.noteSchedule;
+    }else{
+      noteQuality = null
+    }
+    log = JSON.stringify({ 
+      imgData,
+      text,
+      time,
+      phoneNumber,
+      projectName,
+      task,
+      taskType,
+      taskStatus,
+      id,
+      imgQuality,
+      taskStatusAdmin,
+      noteSafe,
+      noteSchedule,
+      noteQuality,
+      imgComparison
+     });
+
     _this.setData({
       loading: true
     })
