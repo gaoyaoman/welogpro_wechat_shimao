@@ -29,6 +29,13 @@
       </view>
     </view>
   </i-panel> 
+  <i-panel title="选择照片质量:">
+    <picker bindchange="selectImgQuality" value="{{index}}" range="{{imgQualityList}}" >
+    <view class="picker">
+      <text class='task-selected'>{{imgQuality?imgQuality:'未选择'}}</text>
+    </view>
+  </picker>
+  </i-panel>
   <i-panel title="选择状态类型:">
     <picker bindchange="selectStatus" value="{{index}}" range="{{statusList}}" >
     <view class="picker">

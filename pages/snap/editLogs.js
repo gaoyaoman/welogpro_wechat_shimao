@@ -36,7 +36,9 @@ Page({
     note:null,  //选择分类后的附加内容说明
     noteSafeList: ['文明巡检','用电巡检','临边巡检','危险品巡检','安全设施巡检','安全配备巡检'],//安全巡检备选项
     noteSafe:null,//安全维度附加项
-    noteSchedule:null //进度维度附加项
+    noteSchedule:null, //进度维度附加项
+    imgQualityList:['优质','一般','较差'], //照片质量列表
+    imgQuality:null 
   },
   /** 
    * 生命周期函数--监听页面加载
@@ -270,6 +272,12 @@ Page({
       }
     }
   },
+  //选择照片质量
+  selectImgQuality:function(e){
+    _this.setData({
+      imgQuality: _this.data.imgQualityList[e.detail.value],
+    });
+  },
   //选择任务
   selectTask:function(e){
     _this.setData({
@@ -335,6 +343,14 @@ Page({
         title: '请添加至少一张照片',
         icon:'none',
         duration:2000
+      })
+      return false;
+    }
+    if (!_this.data.imgQuality) {
+      wx.showToast({
+        title: '请选照片质量',
+        icon: 'none',
+        duration: 2000
       })
       return false;
     }
@@ -418,7 +434,7 @@ Page({
         taskType=_this.data.taskType,	//任务类型：质量、安全、进度
         taskStatus = _this.data.taskStatus,	//任务状态：未开始、进行中、节点验收中、节点验收完成、需整改、整改中、整改完成、任务最终最终完成
         id = _this.data.id,	//数据库中存储任务的主键 id
-        imgQuality = '', //预留参数：照片状态
+        imgQuality = _this.data.imgQuality, //预留参数：照片状态
         taskStatusAdmin = _this.data.taskStatus,//预留参数：管理员修改任务的状态
         noteSafe = null,
         noteSchedule = null,
