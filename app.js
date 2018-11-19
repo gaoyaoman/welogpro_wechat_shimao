@@ -99,8 +99,8 @@ App({
     })
   },
   globalData: {
-    api: 'https://wxss.andyxin.cn/jeecg/rest/',
-    // api: 'https://wxss.welogpro.com/jeecg/rest/',
+    // api: 'https://wxss.andyxin.cn/jeecg/rest/',
+    api: 'https://wxss.welogpro.com/jeecg/rest/',
     userInfo: null,
     projectDay:null,
     ifFromMonth:false,

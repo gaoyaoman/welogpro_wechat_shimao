@@ -46,11 +46,23 @@ Page({
     //入口随手抓拍
     if (options.src) {
       let images = [];
-      images.push(options.src);
-      _this.setData({
-        images: images,
-        href:1
-      });
+      wx.compressImage({
+        src: options.src,
+        quality:30,
+        success:function(re){
+          console.log('succeed to compress image', re);
+          images.push(re.tempFilePath);
+          _this.setData({
+            images: images,
+            href: 1
+          });
+        },
+        fail:function(e){
+          console.log('fail to compress image',e);
+        }
+      })
+      
+      
       wx.request({
         url: getApp().globalData.api + 'welogTaskController/resId',
         data: {
@@ -193,11 +205,23 @@ Page({
         wx.getImageInfo({
           src: res.tempFilePaths[0],
           success(res1) {
-            _this.setData({
-              imgWidth: res1.width,
-              imgHeight: res1.height,
-              images: res.tempFilePaths
-            });
+            wx.compressImage({
+              src: res.tempFilePaths[0],
+              quality:30,
+              success:function(res2){
+                console.log('success',res2);
+                let src=[];
+                src.push(res2.tempFilePath);
+                _this.setData({
+                  imgWidth: res1.width,
+                  imgHeight: res1.height,
+                  images: src
+                });
+              },
+              fail:function(res2){
+                console.log('fail', res2)
+              }
+            })
           }
         });
       }
@@ -399,8 +423,7 @@ Page({
         noteSafe = null,
         noteSchedule = null,
         noteQuality = null,
-        imgComparison = ''
-
+        imgComparison = null,
         log = null; //参数
     if (_this.data.comparison.status){
       imgComparison = _this.data.comparison.base64;
@@ -429,10 +452,10 @@ Page({
       noteQuality,
       imgComparison
      });
-
+    console.log(log)
     _this.setData({
       loading: true
-    })
+    });
 		
     wx.request({
       url: getApp().globalData.api +'welogTaskController/addworklog',
