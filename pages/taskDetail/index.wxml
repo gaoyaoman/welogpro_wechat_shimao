@@ -40,22 +40,19 @@
             <text class='status-btn-text'>质量信息:</text>
             <button wx:if="{{item.qualityType=='0'||!item.qualityType}}" type="primary" size="mini" plain="{{false}}" bindtap="toWrite" data-title="{{item}}" data-status="{{item.qualityType}}" data-statusType="质量" class='sub-btn'> 待填报 </button>
             <button wx:elif="{{item.qualityType=='4'}}" type="warn" size="mini"  bindtap="toWrite" data-status="{{item.qualityType}}" data-title="{{item}}" data-statusType="质量"> 待整改 </button>
-            <button wx:elif="{{item.qualityType=='7'}}" type="default" size="mini" plain="{{true}}" bindtap="toWrite" data-title="{{item}}" disabled='true'> 已完成 </button>
-            <button wx:else type="primary" size="mini" plain="{{false}}" data-status="{{item.qualityType}}" bindtap="toWrite" data-title="{{item}}" class="sub-btn-warn" data-statusType="质量"> 未完成 </button>
+            <button wx:else type="default" size="mini" plain="{{false}}" disabled data-status="{{item.qualityType}}" bindtap="toWrite" data-title="{{item}}" data-statusType="质量"> 已填报 </button>
           </view> 
           <view class='status-btn' wx:if="{{shcedule}}">
             <text class='status-btn-text'>进度信息:</text>
-            <button wx:if="{{item.scheduleType=='0'||!item.scheduleType}}" type="primary" size="mini" plain="{{false}}" bindtap="toWrite" data-title="{{item}}" class='sub-btn' data-status="{{item.shceduleType}}" data-statusType="进度"> 待填报 </button>
-            <button wx:elif="{{item.scheduleType=='4'}}" type="warn" size="mini"  bindtap="toWrite" data-title="{{item}}" data-status="{{item.shceduleType}}" data-statusType="进度"> 待整改 </button>
-            <button wx:elif="{{item.scheduleType=='7'}}" type="default" size="mini" plain="{{true}}" bindtap="toWrite" data-title="{{item}}" disabled='true'> 已完成 </button>
-            <button wx:else type="primary" size="mini" plain="{{false}}" bindtap="toWrite" data-title="{{item}}" class="sub-btn-warn" data-status="{{item.shceduleType}}" data-statusType="进度"> 未完成 </button>
+            <button wx:if="{{item.scheduleType=='0'||!item.scheduleType}}" type="primary" size="mini" plain="{{false}}" bindtap="toWrite" data-title="{{item}}" class='sub-btn' data-status="{{item.scheduleType}}" data-statusType="进度"> 待填报 </button>
+            <button wx:elif="{{item.scheduleType=='4'}}" type="warn" size="mini"  bindtap="toWrite" data-title="{{item}}" data-status="{{item.scheduleType}}" data-statusType="进度"> 未完成 </button>
+            <button wx:else type="default" size="mini" plain="{{false}}" disabled bindtap="toWrite" data-title="{{item}}" data-status="{{item.scheduleType}}" data-statusType="进度"> 已填报 </button>
           </view> 
           <view class='status-btn' wx:if="{{safe}}">
             <text class='status-btn-text'>安全信息:</text>
             <button wx:if="{{item.safeType=='0'||!item.safeType}}" type="primary" size="mini" plain="{{false}}" bindtap="toWrite" data-title="{{item}}" class='sub-btn' data-status="{{item.safeType}}" data-statusType="安全"> 待填报 </button>
             <button wx:elif="{{item.safeType=='4'}}" type="warn" size="mini"  bindtap="toWrite" data-title="{{item}}" data-status="{{item.safeType}}" data-statusType="安全"> 待整改 </button>
-            <button wx:elif="{{item.safeType=='7'}}" type="default" size="mini" plain="{{true}}" bindtap="toWrite" data-title="{{item}}" disabled='true'> 已完成 </button>
-            <button wx:else type="primary" size="mini" plain="{{false}}" bindtap="toWrite" data-title="{{item}}" class="sub-btn-warn" data-status="{{item.safeType}}" data-statusType="安全"> 未完成 </button>
+            <button wx:else type="default" size="mini" plain="{{false}}" disabled bindtap="toWrite" data-title="{{item}}" data-status="{{item.safeType}}" data-statusType="安全"> 已填报 </button>
           </view> 
         </view>
         </view>
