@@ -1,65 +1,65 @@
-<view>  
-<view class='today' >
-  <view class='change-day-btn' bindtap='changeDay' data-f="pre">
-    <text class="iconfont icon-fanhui"></text>
-    <text class='change-day-btn-font'>前一天</text>
-  </view>
-  <view bindtap='returnDate' class='return'>
-    <navigator url='../taskList/task'>
-      <text class='return-date'>当前日期：{{isToday}}</text>
-    </navigator>
-  </view>
-  <view class='change-day-btn' bindtap='changeDay' data-f="next">
-    <text>后一天</text>
-    <text class="iconfont icon-gengduo"></text>
-  </view>
-</view>
+<view>
+	<view class='today' >
+		<view class='change-day-btn' bindtap='changeDay' data-f="pre">
+			<text class="iconfont icon-fanhui"></text>
+			<text class='change-day-btn-font'>前一天</text>
+		</view>
+		<view bindtap='returnDate' class='return'>
+			<navigator url='../taskList/task'>
+				<text class='return-date'>当前日期：{{isToday}}</text>
+			</navigator>
+		</view>
+		<view class='change-day-btn' bindtap='changeDay' data-f="next">
+			<text>后一天</text>
+			<text class="iconfont icon-gengduo"></text>
+		</view>
+	</view>
 
-  <scroll-view class='scroll-view-x' scroll-x="true">
-  <view class="tab-navbar" >
-    <view wx:for="{{navbar}}" data-title="{{item}}"  wx:key="unique" bindtap="navbarTap" class="item {{currentTab==item ? 'active' : ''}}" >
-        {{item}}
-    </view>
-  </view>
-  </scroll-view>
+	<scroll-view class='scroll-view-x' scroll-x="true">
+		<view class="tab-navbar" >
+			<view wx:for="{{navbar}}" data-title="{{item}}"  wx:key="unique" bindtap="navbarTap" class="item {{currentTab==item ? 'active' : ''}}" >
+				{{item}}
+			</view>
+		</view>
+	</scroll-view>
 
- <view wx:for='{{dataList}}' wx:key='index' data-idx="{{index}}"  >
-  <view class='project'  wx:if="{{currentTab==item.projectName}}">
-    <view class='project-content'>
-      <view class='project-name' >任务名称：{{item.taskText}}</view> 
-      <view class='card-content'>
-        <view class='task-info'>
-          <!-- <text class='content-title'>详细信息：</text> -->
-          <view class='task-info-text' >起始日期：{{item.startDate}}</view> 
-          <view class='task-info-text' >结束日期：{{item.endDate}}</view> 
-          <view class='task-info-text' >工期：{{item.duration}} 日</view> 
-        </view>
-        <view class='btns'>
-          <!-- <text class='content-title'>任务状态：</text>         -->
-          <view class='status-btn' wx:if="{{quality}}">
-            <text class='status-btn-text'>质量信息:</text>
-            <button wx:if="{{item.qualityType=='0'||!item.qualityType}}" type="primary" size="mini" plain="{{false}}" bindtap="toWrite" data-title="{{item}}" data-status="{{item.qualityType}}" data-statusType="质量" class='sub-btn'> 待填报 </button>
-            <button wx:elif="{{item.qualityType=='4'}}" type="warn" size="mini"  bindtap="toWrite" data-status="{{item.qualityType}}" data-title="{{item}}" data-statusType="质量"> 待整改 </button>
-            <button wx:else type="default" size="mini" plain="{{false}}" style="color:#606266 !important" data-status="{{item.qualityType}}" bindtap="toWrite" data-title="{{item}}" data-statusType="质量"> 已填报 </button>
-          </view> 
-          <view class='status-btn' wx:if="{{shcedule}}">
-            <text class='status-btn-text'>进度信息:</text>
-            <button wx:if="{{item.scheduleType=='0'||!item.scheduleType}}" type="primary" size="mini" plain="{{false}}" bindtap="toWrite" data-title="{{item}}" class='sub-btn' data-status="{{item.scheduleType}}" data-statusType="进度"> 待填报 </button>
-            <button wx:elif="{{item.scheduleType=='4'}}" type="warn" size="mini"  bindtap="toWrite" data-title="{{item}}" data-status="{{item.scheduleType}}" data-statusType="进度"> 未完成 </button>
-            <button wx:else type="default" size="mini" plain="{{false}}" style="color:#606266 !important" bindtap="toWrite" data-title="{{item}}" data-status="{{item.scheduleType}}" data-statusType="进度"> 已填报 </button>
-          </view> 
-          <view class='status-btn' wx:if="{{safe}}">
-            <text class='status-btn-text'>安全信息:</text>
-            <button wx:if="{{item.safeType=='0'||!item.safeType}}" type="primary" size="mini" plain="{{false}}" bindtap="toWrite" data-title="{{item}}" class='sub-btn' data-status="{{item.safeType}}" data-statusType="安全"> 待填报 </button>
-            <button wx:elif="{{item.safeType=='4'}}" type="warn" size="mini"  bindtap="toWrite" data-title="{{item}}" data-status="{{item.safeType}}" data-statusType="安全"> 待整改 </button>
-            <button wx:else type="default" size="mini" plain="{{false}}" style="color:#606266 !important" bindtap="toWrite" data-title="{{item}}" data-status="{{item.safeType}}" data-statusType="安全"> 已填报 </button>
-          </view> 
-        </view>
-        </view>
-      </view>
-    </view>
-</view>
-  <view wx:if="{{noProject}}" class="no-project">
-    <text class="no-text">——————</text>今日暂无项目<text class="no-text">——————</text>  
-  </view>
+	<view wx:for='{{dataList}}' wx:key='index' data-idx="{{index}}"  >
+		<view class='project'  wx:if="{{currentTab==item.projectName}}">
+			<view class='project-content'>
+				<view class='project-name' >任务名称：{{item.taskText}}</view>
+				<view class='card-content'>
+					<view class='task-info'>
+						<!-- <text class='content-title'>详细信息：</text> -->
+						<view class='task-info-text' >起始日期：{{item.startDate}}</view>
+						<view class='task-info-text' >结束日期：{{item.endDate}}</view>
+						<view class='task-info-text' >工期：{{item.duration}} 日</view>
+					</view>
+					<view class='btns'>
+						<!-- <text class='content-title'>任务状态：</text>         -->
+						<view class='status-btn' wx:if="{{quality}}">
+							<text class='status-btn-text'>质量信息:</text>
+							<button wx:if="{{item.qualityType=='0'||!item.qualityType}}" type="primary" size="mini" plain="{{false}}" bindtap="toWrite" data-title="{{item}}" data-status="{{item.qualityType}}" data-statusType="质量" class='sub-btn'> 待填报 </button>
+							<button wx:elif="{{item.qualityType=='4'}}" type="warn" size="mini"  bindtap="toWrite" data-status="{{item.qualityType}}" data-title="{{item}}" data-statusType="质量"> 待整改 </button>
+							<button wx:else type="default" size="mini" plain="{{false}}" style="color:#606266 !important" data-status="{{item.qualityType}}" bindtap="toWrite" data-title="{{item}}" data-statusType="质量"> 已填报 </button>
+						</view>
+						<view class='status-btn' wx:if="{{shcedule}}">
+							<text class='status-btn-text'>进度信息:</text>
+							<button wx:if="{{item.scheduleType=='0'||!item.scheduleType}}" type="primary" size="mini" plain="{{false}}" bindtap="toWrite" data-title="{{item}}" class='sub-btn' data-status="{{item.scheduleType}}" data-statusType="进度"> 待填报 </button>
+							<button wx:elif="{{item.scheduleType=='4'}}" type="warn" size="mini"  bindtap="toWrite" data-title="{{item}}" data-status="{{item.scheduleType}}" data-statusType="进度"> 未完成 </button>
+							<button wx:else type="default" size="mini" plain="{{false}}" style="color:#606266 !important" bindtap="toWrite" data-title="{{item}}" data-status="{{item.scheduleType}}" data-statusType="进度"> 已填报 </button>
+						</view>
+						<view class='status-btn' wx:if="{{safe}}">
+							<text class='status-btn-text'>安全信息:</text>
+							<button wx:if="{{item.safeType=='0'||!item.safeType}}" type="primary" size="mini" plain="{{false}}" bindtap="toWrite" data-title="{{item}}" class='sub-btn' data-status="{{item.safeType}}" data-statusType="安全"> 待填报 </button>
+							<button wx:elif="{{item.safeType=='4'}}" type="warn" size="mini"  bindtap="toWrite" data-title="{{item}}" data-status="{{item.safeType}}" data-statusType="安全"> 待整改 </button>
+							<button wx:else type="default" size="mini" plain="{{false}}" style="color:#606266 !important" bindtap="toWrite" data-title="{{item}}" data-status="{{item.safeType}}" data-statusType="安全"> 已填报 </button>
+						</view>
+					</view>
+				</view>
+			</view>
+		</view>
+	</view>
+	<view wx:if="{{noProject}}" class="no-project">
+		<text class="no-text">——————</text>今日暂无项目<text class="no-text">——————</text>
+	</view>
 </view>
