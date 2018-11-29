@@ -425,7 +425,8 @@ Page({
       }
     }
 
-    let imgData = wx.getFileSystemManager().readFileSync(_this.data.images[0], "base64"), //图片数据
+    let
+      imgData = wx.getFileSystemManager().readFileSync(_this.data.images[0], "base64"), //图片数据
       text = _this.data.textInfo,	//图片说明
       time = new Date().getTime(),	//上传时间
       phoneNumber = wx.getStorageSync('phoneNumber'), //手机号码
@@ -521,17 +522,48 @@ Page({
               'content-type': 'application/x-www-form-urlencoded'
             },
             success: function (r) {
-              wx.showModal({
-                title: '',
-                content: '日志提交成功！',
-                showCancel: false,
-                success: function (e) {
-                  console.log(e);
-                  if (e.confirm) {
-                    wx.navigateBack({})
+              if (taskStatus === '4') {
+                wx.request({
+                  url: getApp().globalData.api + 'sendMessageController/sendMessage',
+                  data: {
+                    projectName: projectName,
+                    task: task,
+                    describe: ''
+                  },
+                  header: {
+                    'content-type': 'application/x-www-form-urlencoded'
+                  },
+                  success: function (ee) {
+                    //
+                  },
+                  complete: function (ee) {
+                    console.log(ee);
+                    wx.showModal({
+                      title: '',
+                      content: '日志提交成功！',
+                      showCancel: false,
+                      success: function (e) {
+                        console.log(e);
+                        if (e.confirm) {
+                          wx.navigateBack({})
+                        }
+                      }
+                    })
                   }
-                }
-              })
+                })
+              } else {
+                wx.showModal({
+                  title: '',
+                  content: '日志提交成功！',
+                  showCancel: false,
+                  success: function (e) {
+                    console.log(e);
+                    if (e.confirm) {
+                      wx.navigateBack({})
+                    }
+                  }
+                })
+              }
             }
           })
         }
