@@ -1,0 +1,30 @@
+<view style='padding-bottom:20rpx'>
+  <i-panel title="{{task}}">
+    <view class='content'>
+      <view class='log-card' wx:for='{{dataList}}' wx:key='index'>
+        <view class='img'>
+          <image src="{{item.img}}" style='width:200rpx;height:240rpx'></image>
+        </view>
+        <view class='text'>
+          <view style='margin-bottom:10rpx'>
+            <text class='text-title'>提交时间:</text>  
+            <view class='text-content'>{{item.log_date_stamp}}</view>
+          </view>
+          <view style='margin-bottom:10rpx'>
+            <text class='text-title'>日志说明:</text>  
+            <view class='text-content' style='height:160rpx !important;overflow:auto !important'>{{item.text}}</view>
+          </view>
+          <view style='align-items:center;margin-bottom:10rpx;'>
+            <text class='text-title'>操作:</text>  
+            <view>
+              <button class='btn' type="warn" size="mini" plain="{{false}}" data-data="{{item}}" bindtap="toWrite" class='sub-btn'>提交整改日志</button>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+    
+    <i-spin size="large" custom fix wx:if="{{ spinShow }}">数据加载中...</i-spin>
+
+  </i-panel> 
+</view>

@@ -1,10 +1,10 @@
-<view class="container m-b5">  
+<view style='padding-bottom:20rpx'>  
   <i-panel title="个人设置" hide-border='true'>
     <i-cell-group>
       <i-cell title="头像" value="设置" is-link url="userInfo"></i-cell>
     </i-cell-group>
   </i-panel>
-  <i-panel title="用户角色" hide-border='true'>
+  <i-panel title="角色" hide-border='true'>
     <view style="padding: 10px 14px;">
         <view wx-if="{{roles.length>0}}">
             <i-tag

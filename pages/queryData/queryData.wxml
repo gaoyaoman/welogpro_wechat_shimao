@@ -1,5 +1,5 @@
 <!--pages/queryData/queryData.wxml-->
-<view>
+<view style="padding-bottom:20rpx">
 	<i-sticky scrollTop="{{scrollTop}}">
         <i-sticky-item i-class="">
             <view slot="title" class="flexList">

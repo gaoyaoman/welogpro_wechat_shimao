@@ -58,68 +58,73 @@ Page({
             _this.setData({
               roles: role.split(',')
             })
-          }
-          console.log('role',role)
-        } else {
-          wx.showToast({
-            title: '网络请求失败,请稍后再试',
-            icon: 'none',
-            duration: 3000
-          })
-        }
-      }
-    });
-    wx.request({
-      url: App.globalData.api + 'welogTaskController/resId',
-      data: {
-        resId: wx.getStorageSync('phoneNumber'),
-      },
-      header: {
-        'content-type': 'application/json'
-      },
-      success(res) {
-        // console.log('res', res)
-        if (res.errMsg === "request:ok") {
-          if (res.data !== 'no task') {
-            let navbar = [], dataList = [];
-            let list=[]
-            for (let i = 0; i < res.data.length; i++) {
-              if (res.data[i].length !== 0) {
-                for (let j = 0; j < res.data[i].length; j++) {
-                  if (navbar.indexOf(res.data[i][j].projectName) == -1) {
-                    navbar.unshift(res.data[i][j].projectName) //在res中提取projectName构建navbar
+            let url;
+            if (role.includes('经理')) {
+              url = App.globalData.api + 'welogTaskController/getManagerTaskList'
+            } else {
+              url = App.globalData.api + 'welogTaskController/resId'
+            }
+            wx.request({
+              url: url,
+              data: {
+                resId: wx.getStorageSync('phoneNumber'),
+              },
+              header: {
+                'content-type': 'application/json'
+              },
+              success(res) {
+                console.log('res', res)
+                if (res.errMsg === "request:ok") {
+                  if (res.data !== 'no task') {
+                    let navbar = [], dataList = [];
+                    let list = []
+                    for (let i = 0; i < res.data.length; i++) {
+                      if (res.data[i].length !== 0) {
+                        for (let j = 0; j < res.data[i].length; j++) {
+                          if (navbar.indexOf(res.data[i][j].projectName) == -1) {
+                            navbar.unshift(res.data[i][j].projectName) //在res中提取projectName构建navbar
+                          }
+                          list.push(res.data[i][j])
+
+                        }
+                      }
+                    }
+                    dataList = dataList.concat(list);
+                    for (let i = 0; i < dataList.length; i++) {
+                      dataList[i].startDate = dateformat.format(new Date(dataList[i].startDate), 'yyyy/MM/dd');
+                      dataList[i].endDate = dateformat.format(new Date(dataList[i].endDate), 'yyyy/MM/dd');
+                    }
+                    if (navbar.length === 0) {
+                      _this.setData({
+                        navbar: [],
+                        currentTab: '',
+                        dataList: [],
+                        noProject: true
+                      })
+                    } else {
+                      _this.setData({
+                        navbar: navbar,
+                        currentTab: navbar[0],
+                        dataList: dataList
+                      })
+                    }
+                  } else {
+                    _this.setData({
+                      navbar: [],
+                      currentTab: '',
+                      dataList: [],
+                      noProject: true
+                    })
                   }
-                  list.push(res.data[i][j])
-                
+                } else {
+                  wx.showToast({
+                    title: '网络请求失败,请稍后再试',
+                    icon: 'none',
+                    duration: 3000
+                  })
                 }
               }
-            }
-            dataList = dataList.concat(list);
-            for (let i = 0; i < dataList.length; i++) {
-              dataList[i].startDate = dateformat.format(new Date(dataList[i].startDate), 'yyyy/MM/dd');
-              dataList[i].endDate = dateformat.format(new Date(dataList[i].endDate), 'yyyy/MM/dd');
-            }
-            if (navbar.length === 0) {
-              _this.setData({
-                navbar: [],
-                currentTab: '',
-                dataList: [],
-                noProject: true
-              })
-            } else {
-              _this.setData({
-                navbar: navbar,
-                currentTab: navbar[0],
-                dataList: dataList
-              })
-            }
-          } else {
-            _this.setData({
-              navbar: [],
-              currentTab: '',
-              dataList: [],
-              noProject: true
-            })
+            });
           }
         } else {
           wx.showToast({

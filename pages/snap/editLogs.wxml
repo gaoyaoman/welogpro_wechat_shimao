@@ -1,4 +1,4 @@
-<view>
+<view  style="padding-bottom:20rpx">
   <i-panel title="文字说明:">
     <i-input value="{{textInfo}}" bind:change="textChange" type="textarea" placeholder="文字说明内容" />
   </i-panel>
@@ -84,6 +84,9 @@
     </view>
   </i-panel>
   </view>
-  
-  <i-button type="primary" bind:click="saveData" i-class="submit-btn" loading="{{loading}}">提交日志</i-button>
+  <i-button wx:if="{{bt}}" type="primary" bind:click="setText" i-class="submit-btn" loading="{{loading}}">继续提交</i-button>
+	<i-button wx:else type="primary" bind:click="saveData" i-class="submit-btn" loading="{{loading}}">提交日志</i-button>
+
+  <i-spin size="large" custom fix wx:if="{{ loading1 }}">正在载入已填报的日志数据...</i-spin>
+  <i-spin size="large" custom fix wx:if="{{ loading2 }}">日志提交中...</i-spin>
 </view>

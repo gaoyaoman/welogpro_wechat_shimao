@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "需整改/未完成",
+  "usingComponents": {
+    "i-button": "../../dist/button/index",
+    "i-panel": "../../dist/panel/index",
+    "i-spin": "../../dist/spin/index"  
+    }
+}

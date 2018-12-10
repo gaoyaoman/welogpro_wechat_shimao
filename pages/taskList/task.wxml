@@ -1,4 +1,4 @@
-<view>
+<view style="padding-bottom:20rpx">
   <view hidden='{{changeYearFlag}}'>
   <!-- 显示当前月份 的头部 -->
     <view  class='top-navbar'>
