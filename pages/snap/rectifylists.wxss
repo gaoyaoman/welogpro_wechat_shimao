@@ -1,0 +1,44 @@
+.content{
+  padding: 16rpx;
+  min-height:300rpx;
+}
+.log-card{
+  background-color:#ffffff;
+  padding: 10rpx;
+  margin-bottom: 10rpx;
+  display: flex;
+  flex-direction: row;
+  border: 1rpx solid #dddee1;
+
+}
+.img{
+  width: 250rpx;
+  margin-right: 30rpx;
+  background-color: #f7f7f7;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.text{
+  flex: 1;
+  font-size: 24rpx;
+}
+.text view{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+.text-title{
+  font-weight: bloder;
+  width: 105rpx;
+  margin-right: 16rpx;
+  text-align: right;
+  color: #17233d;
+}
+.text-content{
+  color: #515a6e;
+  width: 290rpx;
+}
+.btn{
+  height: 50rpx;
+}

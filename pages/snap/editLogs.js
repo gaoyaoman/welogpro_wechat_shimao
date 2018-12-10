@@ -11,8 +11,11 @@ Page({
       status: false,
       src: '',
       ifNull: false,
-      base64: ''
+      base64: '',
+      time:null
     },
+    bt:null,
+    _text:'',
     src: [],
     images: [], //图片路径
     list: [],
@@ -29,6 +32,8 @@ Page({
     taskType: '',  //任务类型
     taskStatus: '', //任务状态
     loading: false,  //提交loading
+    loading1:false,   // 已填报信息回显loading
+    loading2:false,   //数据提交时全屏遮罩loading
     typeList: ['进度', '质量', '安全'], //任务类型维度备选项
     statusList: ['未开始', '进行中', '节点验收中', '节点验收完成', '需整改', '整改中', '整改完成', '任务最终完成'], //任务状态备选项
     href: 0, //从哪跳转来：1随手抓拍 2任务列表
@@ -52,7 +57,6 @@ Page({
         src: options.src,
         quality: 30,
         success: function (re) {
-          console.log('succeed to compress image', re);
           images.push(re.tempFilePath);
           _this.setData({
             images: images,
@@ -63,7 +67,6 @@ Page({
           console.log('fail to compress image', e);
         }
       })
-
 
       wx.request({
         url: getApp().globalData.api + 'welogTaskController/resId',
@@ -127,50 +130,94 @@ Page({
         }
       });
     } else {
+			if (!!options.projectName && !!options.taskType && !!options.taskText && !!options.projectCode) {
+        _this.setData({
+          loading1: true,
+        })
+        let data={
+          projectName: options.projectName,
+          task: options.taskText,
+          type: options.taskType,
+          phoneNumber: wx.getStorageSync('phoneNumber'),
+          position:''
+        }
+        let role = wx.getStorageSync('roles');
+        if (role && role.includes('经理')){
+          data.position='经理'
+        }
+				wx.request({
+					url: getApp().globalData.api + 'welogTaskController/getNowWorkLogList',
+					data: data,
+					header: {
+						'content-type': 'application/json'
+					},
+					success(res) {
+            if(!!res.data.results){
+              let arr = [];
+              arr.push("data:image/jpeg;base64," + res.data.results[0].imgData);
+              _this.setData({
+                textInfo: res.data.results[0].text,//文字说明
+                imgQuality: res.data.results[0].imgQuality,//照片质量
+                taskStatus: res.data.results[0].taskStatus,//状态类型
+                images: arr,
+                task: res.data.results[0].task,//任务
+                bt: true
+              })
+
+              switch (res.data.results[0].taskType) {
+                case "质量":
+                  break;
+                case '进度':
+                  _this.setData({
+                    noteSchedule: res.data.results[0].noteSchedule,
+                  });
+                  break;
+                case '安全':
+                  _this.setData({
+                    noteSafe: res.data.results[0].noteSafe,
+                  });
+              } 
+            }
+					},
+          complete:function(){
+            _this.setData({
+              loading1: false,
+            })
+          }
+				})
+			}
       let note;
       if (options.status === '4') {
-        wx.request({
-          url: getApp().globalData.api + 'welogTaskController/getWorkLogImg',
-          data: {
-            task: options.tastText,
-            projectName: options.projectName,
-            type: options.taskType,
-            phoneNumber: wx.getStorageSync("phoneNumber")
-          },
-          header: {
-            'content-type': 'application/json'
-          },
-          success(res) {
-            //备注:后端查不到数据返回"no task"
-            if (res.errMsg === "request:ok") {
-              if (res.data.img) {
-                let base64 = 'data:image/jpeg;base64,' + res.data.img;//base64格式图片
-                let imgPath = wx.env.USER_DATA_PATH + '/comparison_' + new Date().getTime() + '.jpeg';
-                //如果图片字符串不含要清空的前缀,可以不执行下行代码.
-                let imageData = base64.replace(/^data:image\/\w+;base64,/, "");
-                let fs = wx.getFileSystemManager();
-                fs.writeFileSync(imgPath, imageData, "base64");
-                _this.setData({
-                  comparison: {
-                    status: true,
-                    src: imgPath,
-                    ifNull: false,
-                    base64: res.data.img
-                  }
-                })
-              } else {
-                _this.setData({
-                  comparison: {
-                    status: true,
-                    src: '',
-                    ifNull: true,
-                    base64: ''
-                  }
-                })
-              }
-            }
+        console.log(options);
+        if (wx.getStorageSync('imgComparison')) {
+          let imgComparison = wx.getStorageSync('imgComparison');
+          let base64 = 'data:image/jpeg;base64,' + imgComparison;//base64格式图片
+            let imgPath = wx.env.USER_DATA_PATH + '/comparison_' + new Date().getTime() + '.jpeg';
+            //如果图片字符串不含要清空的前缀,可以不执行下行代码.
+            let imageData = base64.replace(/^data:image\/\w+;base64,/, "");
+            let fs = wx.getFileSystemManager();
+            fs.writeFileSync(imgPath, imageData, "base64");
+            _this.setData({
+              comparison: {
+                status: true,
+                src: imgPath,
+                ifNull: false,
+                base64: imgComparison,
+                time:options.time
+              },
+              _text: options._text,
+            })
+          } else {
+            _this.setData({
+              comparison: {
+                status: true,
+                src: '',
+                ifNull: true,
+                base64: ''
+              },
+              _text: options._text,
+            })
           }
-        });
       }
       switch (options.taskType) {
         case "质量":
@@ -184,7 +231,7 @@ Page({
       }
       _this.setData({
         projectName: options.projectName,
-        task: options.tastText,
+        task: options.taskText,
         id: options.id,
         taskType: options.taskType,
         note: note,
@@ -195,6 +242,19 @@ Page({
       });
     }
   },
+	setText: function () {
+		this.setData({
+			images:[],
+			textInfo: null,
+			imgQuality: null,
+			taskStatus: null,
+			noteSchedule: null,
+			noteSafe: null,
+			bt: false,
+			count: 0
+		})
+	},
+
   chooseImage: function () {
     // 选择图片
     wx.chooseImage({
@@ -211,7 +271,6 @@ Page({
               src: res.tempFilePaths[0],
               quality: 30,
               success: function (res2) {
-                console.log('success', res2);
                 let src = [];
                 src.push(res2.tempFilePath);
                 _this.setData({
@@ -285,6 +344,7 @@ Page({
       id: _this.data.idListTemp[e.detail.value].id
     });
   },
+
   //选择类型：质量、安全、进度
   selectType: function (e) {
     let note = null,
@@ -441,9 +501,11 @@ Page({
       noteSchedule = null,
       noteQuality = null,
       imgComparison = null,
+      textComparison='',
       log = null; //参数
     if (_this.data.comparison.status) {
       imgComparison = _this.data.comparison.base64;
+      textComparison = _this.data._text;
     }
     if (taskType === '安全') {
       noteSafe = _this.data.noteSafe;
@@ -467,13 +529,14 @@ Page({
       noteSafe,
       noteSchedule,
       noteQuality,
-      imgComparison
+      imgComparison,
+      textComparison
     });
-    console.log(log)
     _this.setData({
-      loading: true
+      loading: true,
+      loading2:true
     });
-
+    //提交日志
     wx.request({
       url: getApp().globalData.api + 'welogTaskController/addworklog',
       method: 'POST',
@@ -511,61 +574,148 @@ Page({
               taskStatus = '8';
               break;
           }
-          wx.request({
-            url: getApp().globalData.api + 'welogTaskController/updateWelogTaskType',
-            data: {
-              id: id,
-              type: taskStatus,
-              taskType: taskType
-            },
-            header: {
-              'content-type': 'application/x-www-form-urlencoded'
-            },
-            success: function (r) {
-              if (taskStatus === '4') {
+          if (!_this.data.comparison.ifNull) {
+            wx.request({
+              url: getApp().globalData.api + 'welogTaskController/updateWorkLogStatus',
+              data: {
+                task: task,
+                projectName: projectName,
+                taskType: taskType,
+                taskStatusAdmin: taskStatusAdmin,
+                time: _this.data.comparison.time,
+              },
+              header: {
+                'content-type': 'application/x-www-form-urlencoded'
+              },
+              success: function (ee) {
+                //修改数据库
                 wx.request({
-                  url: getApp().globalData.api + 'sendMessageController/sendMessage',
+                  url: getApp().globalData.api + 'welogTaskController/updateWelogTaskType',
                   data: {
+                    id: id,
+                    type: taskStatus,
+                    taskType: taskType,
                     projectName: projectName,
-                    task: task,
-                    describe: ''
+                    taskTest: task
                   },
                   header: {
                     'content-type': 'application/x-www-form-urlencoded'
                   },
-                  success: function (ee) {
-                    //
-                  },
-                  complete: function (ee) {
-                    console.log(ee);
-                    wx.showModal({
-                      title: '',
-                      content: '日志提交成功！',
-                      showCancel: false,
-                      success: function (e) {
-                        console.log(e);
-                        if (e.confirm) {
-                          wx.navigateBack({})
+                  success: function (r) {
+                    if (taskStatus === '4') {
+                      //发短信
+                      wx.request({
+                        url: getApp().globalData.api + 'sendMessageController/sendMessage',
+                        data: {
+                          projectName: projectName,
+                          task: task,
+                          describe: ''
+                        },
+                        header: {
+                          'content-type': 'application/x-www-form-urlencoded'
+                        },
+                        success: function (ee) {
+                          _this.setData({
+                            loading2:false
+                          })
+                        },
+                        complete: function (ee) {
+                          wx.showModal({
+                            title: '',
+                            content: '日志提交成功！',
+                            showCancel: false,
+                            success: function (e) {
+                              if (e.confirm) {
+                                wx.navigateBack({})
+                              }
+                            }
+                          })
                         }
-                      }
-                    })
-                  }
-                })
-              } else {
-                wx.showModal({
-                  title: '',
-                  content: '日志提交成功！',
-                  showCancel: false,
-                  success: function (e) {
-                    console.log(e);
-                    if (e.confirm) {
-                      wx.navigateBack({})
+                      })
+                    } else {
+                      wx.showModal({
+                        title: '',
+                        content: '日志提交成功！',
+                        showCancel: false,
+                        success: function (e) {
+                          _this.setData({
+                            loading2: false
+                          });
+                          if (e.confirm) {
+                            wx.navigateBack({})
+                          }
+                        }
+                      })
                     }
                   }
                 })
               }
-            }
-          })
+            })
+          } else {
+            //修改数据库
+            wx.request({
+              url: getApp().globalData.api + 'welogTaskController/updateWelogTaskType',
+              data: {
+                id: id,
+                type: taskStatus,
+                taskType: taskType,
+                projectName: projectName,
+                taskTest: task
+              },
+              header: {
+                'content-type': 'application/x-www-form-urlencoded'
+              },
+              success: function (r) {
+                if (taskStatus === '4') {
+                  //发短信
+                  wx.request({
+                    url: getApp().globalData.api + 'sendMessageController/sendMessage',
+                    data: {
+                      projectName: projectName,
+                      task: task,
+                      describe: ''
+                    },
+                    header: {
+                      'content-type': 'application/x-www-form-urlencoded'
+                    },
+                    success: function (ee) {
+                      _this.setData({
+                        loading2: false
+                      })
+                    },
+                    complete: function (ee) {
+                      console.log(ee);
+                      wx.showModal({
+                        title: '',
+                        content: '日志提交成功！',
+                        showCancel: false,
+                        success: function (e) {
+                          if (e.confirm) {
+                            wx.navigateBack({})
+                          }
+                        }
+                      })
+                    }
+                  })
+                } else {
+                  _this.setData({
+                    loading2: false
+                  })
+                  wx.showModal({
+                    title: '',
+                    content: '日志提交成功！',
+                    showCancel: false,
+                    success: function (e) {
+                      console.log(e);
+                      if (e.confirm) {
+                        wx.navigateBack({})
+                      }
+                    }
+                  })
+                }
+              }
+            })
+          }
         }
         else {
           wx.showToast({
@@ -577,7 +727,8 @@ Page({
       },
       complete: function () {
         _this.setData({
-          loading: false
+          loading: false,
+          loading2:false
         })
       }
     });

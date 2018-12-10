@@ -7,36 +7,31 @@ Page({
    * 页面的初始数据
    */
   data: {
+    roles:'',
+    url:null, 
     navbar: [],       //
-    currentTab: "",    //
-    dataList: [],      //
-    List: [],          //
-    isToday: '',       //
-    noProject: false,  //
-    quality: false,
-    shcedule: false,
-    safe: false
+    currentTab:"",    //
+    dataList:[],      //
+    List:[],          //
+    isToday:'',       //
+    noProject:false,  //
+    quality:false,
+    shcedule:false,
+    safe:false
   },
-  /**
-   * 生命周期函数--监听页面加载
-   */
-  onLoad: function (options) {
-    let date = null;
-    let _this = this;
-    if (App.globalData.ifFromMonth && App.globalData.projectDay) {
-      //从日历界面跳转来
-      date = dateformat.format(new Date(App.globalData.projectDay), 'yyyy/MM/dd');
+
+  //获取数据列表
+  getData: function (date){
+    let _this=this;
+    let url;
+    if (_this.data.roles.includes('经理')) {
+      url = App.globalData.api + 'welogTaskController/getManagerTaskList'
     } else {
-      //从主页index跳转来
-      date = dateformat.format(new Date(), 'yyyy/MM/dd');
+      url = App.globalData.api + 'welogTaskController/resId'
     }
-    _this.setData({
-      isToday: date,
-      noProject: false
-    })
     App.globalData.projectDay = false;
     wx.request({
-      url: App.globalData.api + 'welogTaskController/resId',
+      url: url,
       data: {
         resId: wx.getStorageSync('phoneNumber'),
         taskDate: dateformat.format(new Date(date), 'yyyy-MM-dd')
@@ -45,28 +40,25 @@ Page({
         'content-type': 'application/json'
       },
       success(res) {
-        // console.log('res', res)
         if (res.errMsg === "request:ok") {
           if (res.data !== 'no task') {
             let navbar = [], dataList = [];
-            let list = []
+            let list1 = [];
             for (let i = 0; i < res.data.length; i++) {
               if (res.data[i].length !== 0) {
                 for (let j = 0; j < res.data[i].length; j++) {
                   if (navbar.indexOf(res.data[i][j].projectName) == -1) {
                     navbar.unshift(res.data[i][j].projectName) //在res中提取projectName构建navbar
                   }
-                  list.push(res.data[i][j])
+                  list1.push(res.data[i][j])
                 }
               }
             }
-            dataList = dataList.concat(list);
+            dataList = dataList.concat(list1);
             for (let i = 0; i < dataList.length; i++) {
               dataList[i].startDate = dateformat.format(new Date(dataList[i].startDate), 'yyyy/MM/dd');
               dataList[i].endDate = dateformat.format(new Date(dataList[i].endDate), 'yyyy/MM/dd');
             }
-            //console.log('navbar', navbar);//navbar
-            //console.log('dataList', dataList)//navbar的数据项
             if (navbar.length === 0) {
               _this.setData({
                 navbar: [],
@@ -98,6 +90,15 @@ Page({
         }
       }
     });
+  },
+
+
+  /**
+   * 生命周期函数--监听页面加载
+   */
+  onLoad: function (options) {
+    let _this = this;
+		// _this.getFillData();
     //获取用户角色：安全、质量和进度
     wx.request({
       url: App.globalData.api + 'wxUserController/restListByPhone',
@@ -134,7 +135,28 @@ Page({
               safe: true
             })
           }
-          // console.log(_this.data.quality,_this.data.shcedule,_this.data.safe);
+          if (role.includes('经理')){
+            _this.setData({
+              quality: true,
+              shcedule: true,
+              safe: true,
+              roles: role
+            })
+          }
+          let date = null;
+          if (App.globalData.ifFromMonth && App.globalData.projectDay) {
+            //从日历界面跳转来
+            date = dateformat.format(new Date(App.globalData.projectDay), 'yyyy/MM/dd');
+          } else {
+            //从主页index跳转来
+            date = dateformat.format(new Date(), 'yyyy/MM/dd');
+          }
+          _this.setData({
+            isToday: date,
+            noProject: false
+          })
+          _this.getData(date);
+
         } else {
           wx.showToast({
             title: '网络请求失败,请稍后再试',
@@ -146,85 +168,23 @@ Page({
     });
   },
   // 切换前一天或者后一天
-  changeDay(e) {
+  changeDay(e){
     let _this = this;
     //data-f 传参存储日期切换操作的值：前一天/后一天
-    let f = e.currentTarget.dataset.f === "pre" ? true : false;
+    let f = e.currentTarget.dataset.f === "pre"?true:false; 
     //转换日期切换得到的日期结果格式 yyyy/MM/dd => yyyy-MM-dd
     let date = f ? dateformat.format(new Date(new Date(_this.data.isToday).getTime() - 24 * 60 * 60 * 1000), 'yyyy-MM-dd') : dateformat.format(new Date(new Date(_this.data.isToday).getTime() + 24 * 60 * 60 * 1000), 'yyyy-MM-dd');
     _this.setData({
-      isToday: dateformat.format(new Date(date), 'yyyy/MM/dd'),
+      isToday: dateformat.format(new Date(date),'yyyy/MM/dd'),
       noProject: false  //在切换日期时，清空当日无任务提示
     })
-    wx.request({
-      url: App.globalData.api + 'welogTaskController/resId',
-      data: {
-        resId: wx.getStorageSync('phoneNumber'),
-        taskDate: dateformat.format(new Date(date), 'yyyy-MM-dd')
-      },
-      header: {
-        'content-type': 'application/json'
-      },
-      success(res) {
-        if (res.errMsg === "request:ok") {
-          if (res.data !== 'no task') {
-            let navbar = [], dataList = [];
-            let list1 = [];
-            for (let i = 0; i < res.data.length; i++) {
-              if (res.data[i].length !== 0) {
-                for (let j = 0; j < res.data[i].length; j++) {
-                  if (navbar.indexOf(res.data[i][j].projectName) == -1) {
-                    navbar.unshift(res.data[i][j].projectName) //在res中提取projectName构建navbar
-                  }
-                  list1.push(res.data[i][j]);
-                }
-              }
-            }
-            dataList = dataList.concat(list1);
-            for (let i = 0; i < dataList.length; i++) {
-              dataList[i].startDate = dateformat.format(new Date(dataList[i].startDate), 'yyyy/MM/dd');
-              dataList[i].endDate = dateformat.format(new Date(dataList[i].endDate), 'yyyy/MM/dd');
-            }
-            // console.log('navbar', navbar);//navbar
-            // console.log('dataList', dataList)//navbar的数据项
-            //用来判断当天是否无任务
-            if (navbar.length === 0) {
-              _this.setData({
-                navbar: [],
-                dataList: [],
-                currentTab: '',
-                noProject: true
-              })
-            } else {
-              _this.setData({
-                navbar: navbar,
-                currentTab: navbar[0],
-                dataList: dataList
-              })
-            }
-          } else {
-            _this.setData({
-              navbar: [],
-              dataList: [],
-              currentTab: '',
-              noProject: true
-            })
-          }
-
-        } else { //处理response异常
-          wx.showToast({
-            title: '网络请求失败,请稍后再试',
-            icon: 'none',
-            duration: 3000
-          })
-        }
-      }
-    });
+    _this.getData(date);
   },
   //
-  returnDate() {
+  returnDate(){
     //content
   },
+
   //转换tab标签
   navbarTap: function (e) {
     this.setData({
@@ -243,24 +203,38 @@ Page({
       }
     }
   },
-  // 填写详细信息
-  toWrite(e) {
-    wx.navigateTo({
-      url: '../snap/editLogs?tastText=' + e.target.dataset.title.taskText + '&&projectName=' + e.target.dataset.title.projectName + '&&id=' + e.target.dataset.title.id + '&taskType=' + e.target.dataset.statustype + '&status=' + e.target.dataset.status,
-    })
+// 填写详细信息
+  toWrite(e){
+		//获取填报信息
+		if (e.target.dataset.btntype==="1") {
+			wx.navigateTo({
+				url: '../snap/editLogs?projectName=' + e.target.dataset.title.projectName + '&&taskText=' + e.target.dataset.title.taskText + '&&taskType=' + e.target.dataset.statustype + '&&projectCode=' + e.target.dataset.title.projectCode + '&&id=' + e.target.dataset.title.id + '&&status=' + e.target.dataset.status,
+			})
+		}
+		else{
+            //判断是否进入当前任务的需整改/未完成列表页面
+            if (e.target.dataset.status==='4'){
+                wx.navigateTo({
+                    url: '../snap/rectifylists?taskText=' + e.target.dataset.title.taskText + '&&projectName=' + e.target.dataset.title.projectName + '&&id=' + e.target.dataset.title.id + '&taskType=' + e.target.dataset.statustype + '&status=' + e.target.dataset.status
+                })
+            }else{
+                wx.navigateTo({
+                    url: '../snap/editLogs?taskText=' + e.target.dataset.title.taskText + '&&projectName=' + e.target.dataset.title.projectName + '&&id=' + e.target.dataset.title.id + '&taskType=' + e.target.dataset.statustype + '&status=' + e.target.dataset.status
+                })
+            }
+		}
   },
   /**
     * 生命周期函数--监听页面初次渲染完成
     */
-  onReady: function () { },
+  onReady: function () {},
 
   /**
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    if (App.globalData.ifBack) {
+    if(App.globalData.ifBack){
       let date = null;
-      let _this = this;
       if (App.globalData.ifFromMonth && App.globalData.projectDay) {
         //从日历界面跳转来
         date = dateformat.format(new Date(App.globalData.projectDay), 'yyyy/MM/dd');
@@ -268,73 +242,11 @@ Page({
         //从主页index跳转来
         date = dateformat.format(new Date(), 'yyyy/MM/dd');
       }
-      _this.setData({
+      this.setData({
         isToday: date,
         noProject: false
       })
-      App.globalData.projectDay = false;
-      wx.request({
-        url: App.globalData.api + 'welogTaskController/resId',
-        data: {
-          resId: wx.getStorageSync('phoneNumber'),
-          taskDate: dateformat.format(new Date(date), 'yyyy-MM-dd')
-        },
-        header: {
-          'content-type': 'application/json'
-        },
-        success(res) {
-          if (res.errMsg === "request:ok") {
-            if (res.data !== 'no task') {
-              let navbar = [], dataList = [];
-              let list1 = [];
-              for (let i = 0; i < res.data.length; i++) {
-                if (res.data[i].length !== 0) {
-                  for (let j = 0; j < res.data[i].length; j++) {
-                    if (navbar.indexOf(res.data[i][j].projectName) == -1) {
-                      navbar.unshift(res.data[i][j].projectName) //在res中提取projectName构建navbar
-                    }
-                    list1.push(res.data[i][j])
-                  }
-                }
-              }
-              dataList = dataList.concat(list1);
-              for (let i = 0; i < dataList.length; i++) {
-                dataList[i].startDate = dateformat.format(new Date(dataList[i].startDate), 'yyyy/MM/dd');
-                dataList[i].endDate = dateformat.format(new Date(dataList[i].endDate), 'yyyy/MM/dd');
-              }
-              //console.log('navbar', navbar);//navbar
-              //console.log('dataList', dataList)//navbar的数据项
-              if (navbar.length === 0) {
-                _this.setData({
-                  navbar: [],
-                  currentTab: '',
-                  dataList: [],
-                  noProject: true
-                })
-              } else {
-                _this.setData({
-                  navbar: navbar,
-                  currentTab: navbar[0],
-                  dataList: dataList
-                })
-              }
-            } else {
-              _this.setData({
-                navbar: [],
-                currentTab: '',
-                dataList: [],
-                noProject: true
-              })
-            }
-          } else {
-            wx.showToast({
-              title: '网络请求失败,请稍后再试',
-              icon: 'none',
-              duration: 3000
-            })
-          }
-        }
-      });
+      this.getData(date);
     }
   },
 
@@ -350,17 +262,17 @@ Page({
    */
   onUnload: function () {
     App.globalData.ifBack = false;
-    App.globalData.ifFromMonth = false;
+    App.globalData.ifFromMonth=false;
   },
 
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
-  onPullDownRefresh: function () { },
+  onPullDownRefresh: function () {},
 
   /**
    * 页面上拉触底事件的处理函数
    */
-  onReachBottom: function () { },
+  onReachBottom: function () {},
 
-})
+  })

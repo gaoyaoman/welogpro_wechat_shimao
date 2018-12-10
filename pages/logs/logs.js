@@ -12,7 +12,9 @@ Page({
 		ifInLine:true,
 		loading:false,
 		disabled:true,
-		pdfURL:''
+		pdfURL:'',
+    start_date:null,
+    end_date:null
   },
 
   /**
@@ -20,8 +22,15 @@ Page({
    */
   onLoad: function (options) {
 		let _this = this;
+    let roles=wx.getStorageSync('roles');
+    let url;
+    if (roles.includes('经理')) {
+      url = App.globalData.api + 'welogTaskController/getManagerTaskList'
+    } else {
+      url = App.globalData.api + 'welogTaskController/resId'
+    }
 		wx.request({
-			url: App.globalData.api + 'welogTaskController/resId',
+			url: url,
 			data: {
 				resId: wx.getStorageSync('phoneNumber'),
 				taskDate: dateformat.format(new Date(), 'yyyy-MM-dd')
@@ -62,7 +71,19 @@ Page({
 			}
 		});
   },
-
+//选择开始时间
+  selectStartDate:function(e){
+    this.setData({
+      start_date:e.detail.value
+    });
+  },
+//选择结束时间
+  selectEndDate: function (e) {
+    this.setData({
+      end_date: e.detail.value
+    });
+  },
+//选择项目名称
 	selectProject: function (e) {
 		let _this=this;
 		if (_this.data.projectList[e.detail.value] !=='暂无可导出的项目'){
@@ -73,9 +94,26 @@ Page({
 			return false;
 		}
 	},
-
+//点击导出按钮
 	searchLogs:function(){
 		let _this=this;
+    //表单验证
+    if (!_this.data.start_date) {
+      wx.showToast({
+        title: '请先选择开始时间',
+        icon: 'none',
+        duration: 2000
+      })
+      return false;
+    };
+    if (!_this.data.end_date) {
+      wx.showToast({
+        title: '请先选择结束时间',
+        icon: 'none',
+        duration: 2000
+      })
+      return false;
+    };
 		if (!_this.data.projectName) {
 			wx.showToast({
 				title: '请先选择项目',
@@ -83,7 +121,8 @@ Page({
 				duration: 2000
 			})
 			return false;
-		}
+		};
+    
 		_this.setData({
 			loading:true
 		})
@@ -116,13 +155,15 @@ Page({
 			url: App.globalData.api + 'saveProjectController/getWorklogListExport',
 			data: {
 				phoneNumber:wx.getStorageSync('phoneNumber'),
-				projectName:_this.data.projectName
+				projectName:_this.data.projectName,
+                startDate:_this.data.start_date,
+                endDate:_this.data.end_date,
+				position:wx.getStorageSync('roles')
 			},
 			header: {
 				'content-type': 'application/json'
 			},
 			success(res) {
-				console.log('res', res)
 				if (!!res.data.url&&res.statusCode === 200) {
 					_this.setData({
 						disabled: false,
@@ -130,12 +171,19 @@ Page({
 					})
 				} else {
 					wx.showToast({
-						title: '网络请求失败,请稍后再试',
+						title: '暂无日志可导出',
 						icon: 'none',
 						duration: 3000
 					})
 				}
 			},
+      fail:function(res){
+        wx.showToast({
+          title: '网络请求失败.',
+          icon: 'none',
+          duration: 3000
+        })
+      },
 			complete:function(){
 				_this.setData({
 					loading: false

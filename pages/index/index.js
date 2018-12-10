@@ -129,6 +129,7 @@ Page({
 						if (!role) {
 							return true;
 						}
+            wx.setStorageSync('roles', role);
 						//判断用户role字符串是否含有含有相应的子字符串
 						if (role.includes('质量')) {
 							_this.setData({
