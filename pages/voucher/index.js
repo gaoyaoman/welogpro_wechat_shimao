@@ -1,6 +1,6 @@
 // pages/editLogs/editLogs.js
 // let dateformat = require('../../utils/dateFormat.js');
-let _this;
+let App=getApp();
 Page({
 
   /**
@@ -33,10 +33,16 @@ Page({
    * 生命周期函数--监听页面加载
    */
 	onLoad: function (options) {
-		_this = this;
-		// let date = dateformat.format(new Date(), 'yyyy-MM-dd');
+    let _this = this,
+      url = '',
+      roles = App.globalData.roles;
+    if (roles.includes('经理')) {
+      url = App.globalData.api + 'welogTaskController/getManagerTaskList'
+    } else {
+      url = App.globalData.api + 'welogTaskController/resId'
+    }
 			wx.request({
-				url: getApp().globalData.api + 'welogTaskController/resId',
+				url: url,
 				data: {
 					resId: wx.getStorageSync('phoneNumber'),
 				},
@@ -45,7 +51,6 @@ Page({
 				},
 				success(res) {
 					//备注:后端查不到数据返回"no task"
-					console.log('res', res)
 					if (res.errMsg === "request:ok") {
 						if (res.data === "no task") {
 							_this.setData({
@@ -148,6 +153,7 @@ Page({
 
 	},
 	chooseImage: function () {
+    let _this = this;
 		// 选择图片
 		wx.chooseImage({
 			count: 1,
@@ -178,6 +184,7 @@ Page({
 		})
 	},
 	deleteImg: function (e) {
+    let _this = this;
 		let index = e.currentTarget.dataset.index;
 		let images = _this.data.images;
 		let count = _this.data.count--;
@@ -189,12 +196,14 @@ Page({
 	},
   //选择费用分类：人力、材料、机械、管理、措施、规费
   selectType:function(e){
+    let _this = this;
     _this.setData({
       type: _this.data.typeList[e.detail.value]
     })
   },
-	//选择任务
+	//选择项目
 	selectProject: function (e) {
+    let _this=this;
 		_this.setData({
 			task: null,
 			projectName: _this.data.projectList[e.detail.value]
@@ -209,23 +218,27 @@ Page({
 		}
 	},
 	selectTask: function (e) {
+    let _this = this;
 		_this.setData({
 			task: _this.data.taskList[e.detail.value],
 			id: _this.data.idListTemp[e.detail.value].id
 		});
 	},
 	changePrice:function(e){
+    let _this = this;
 		_this.setData({
 			price: e.detail.detail.value
 		})
 	},
 	textChange: function (e) {
+    let _this = this;
 		_this.setData({
 			textInfo: e.detail.detail.value
 		})
 	},
 	//保存数据
 	saveData: function () {
+    let _this = this;
 		if (!_this.data.textInfo) {
 			wx.showToast({
 				title: '请添加凭证文字说明',
@@ -297,7 +310,7 @@ Page({
 			loading: true
 		})
 		wx.request({
-			url: getApp().globalData.api + 'welogTaskController/addworklog',
+      url: App.globalData.api + 'welogTaskController/addworklog',
 			method: 'POST',
 			data: {
 				log

@@ -40,8 +40,9 @@ Page({
   takePhoto: function () {
     const ctx = wx.createCameraContext()
     ctx.takePhoto({
-			quality: 'low',
+      quality: 'normal',
       success: (res) => {
+        console.log(res);
         wx.navigateTo({
           url: 'editLogs?src='+res.tempImagePath
         })

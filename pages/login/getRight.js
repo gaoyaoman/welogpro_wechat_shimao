@@ -1,4 +1,5 @@
 let App = getApp();
+import regeneratorRuntime from '../../utils/regenerator-runtime/runtime.js';
 
 Page({
 
@@ -38,11 +39,10 @@ Page({
           iv:e.detail.iv,
           sessionKey: wx.getStorageSync('sessionKey')
         },
-        success:function(res){
+        success: async function(res){
           if (res.errMsg === "request:ok"){
             wx.setStorageSync('phoneNumber', res.data.purePhoneNumber);
             _this.navigateBack();
-            console.log('phoneNumber', wx.getStorageSync('phoneNumber'))
           }else{
             wx.showToast({
               title: '网络请求失败',

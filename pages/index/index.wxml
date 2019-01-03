@@ -1,8 +1,8 @@
 <view>
-  <view class="user-header p-r">
+  <view class="user-header">
     <view class="user-bg-box" bindtap='getRight'>
       <view class="header-img-box">
-        <image src="{{avatarUrl?avatarUrl:'../../image/niming.png'}}" style='width:100%;height:100%'></image>
+        <image src="{{avatarUrl?avatarUrl:'../../image/niming.png'}}" bindtap='setAvatar' style='width:100%;height:100%'></image>
       </view>
       <view wx-if="{{!phoneNumber}}" class='phone-box'>
         <view class='tip-big'>
@@ -12,94 +12,90 @@
           <text>获取权限后可使用更多功能</text>
         </view>
       </view>
-      <view wx-if="{{!!phoneNumber}}">
-        <navigator url="../user/user">
-          <view  class='phone-box-r'>
-            <view class='tip-big'>
-              <text class='phone-box-text'>{{phoneNumber}}</text>
-              <view class="user-orderContBox">
-                <text class="iconfont icon-xiayige user-orderJtou" style='color:#fff;margin-left:240rpx'></text>
-              </view>
-            </view>
+      <view wx-if="{{!!phoneNumber}}" class="header-info" bindtap="toUser">
+        <view>
+          <open-data type="userNickName" class="nick-name"/>
+          <view wx-if="{{roles.length>0}}">
+            <i-tag
+                wx:for="{{roles}}"
+                wx:key="{{index}}"
+                name="{{item}}"
+                color="blue"
+                style="margin-right:20rpx;">
+                {{item}}
+              </i-tag>
           </view>
-        </navigator>
+          <view wx:if="{{roles.length===0}}">
+            <i-tag name="暂未分配角色" color="blue" style="margin-right:20rpx;">暂未分配角色</i-tag>
+          </view>
+        </view>
+        <view>
+          <text class="iconfont icon-xiayige icon-self-setting"></text>
+        </view>
       </view>
     </view>
   </view>
   <view class="m-top20">
-    <navigator url="{{phoneNumber?'../snap/index':''}}">
-    <!-- <navigator url="../snap/editLogs"> -->
-      <view class="user-order-title dis-flex b-f">
-        <view class="flex-box">
-          <text class="iconfont icon-paishe common-icon"></text>
-          <text class="user-orderName h4">随手抓拍</text>
-        </view>
-        <view class="flex-box">
-          <view class="user-orderContBox">
-            <text wx-if="{{!phoneNumber}}" class="message">获取权限后可操作</text>
-            <text class="iconfont icon-xiayige user-orderJtou"></text>
-          </view>
-        </view>
-      </view>
-    </navigator>
-    <navigator url="{{phoneNumber?'../taskDetail/index':''}}">
-      <view class="user-order-title dis-flex b-f">
-        <view class="flex-box">
-          <text class="iconfont icon-list common-icon"></text>
-          <text class="user-orderName h4">任务列表</text>
-        </view>
-        <view class="flex-box">
-          <view class="user-orderContBox">
-            <text wx-if="{{!phoneNumber}}" class="message">获取权限后可操作</text>
-            <i-badge wx-if="{{todo>0&&phoneNumber}}"  style="margin-right:20rpx" count="{{todo}}"/>
-            <text class="iconfont icon-xiayige user-orderJtou"></text>
-          </view>
-        </view>
-      </view>
-    </navigator>
-    <navigator url="{{phoneNumber?'../voucher/index':''}}">
-      <view class="user-order-title dis-flex b-f">
-        <view class="flex-box">
-          <text class="iconfont icon-pingzheng common-icon"></text>
-          <text class="user-orderName h4">记账报销</text>
-        </view>
-        <view class="flex-box">
-          <view class="user-orderContBox">
-            <text wx-if="{{!phoneNumber}}" class="message">获取权限后可操作</text>
-            <text class="iconfont icon-xiayige user-orderJtou"></text>
-          </view>
-        </view>
-      </view>
-		</navigator>
-		<navigator url="{{phoneNumber?'../logs/logs':''}}">
-      <view class="user-order-title dis-flex b-f">
-        <view class="flex-box">
-          <text class="iconfont icon-rizhi common-icon"></text>
-          <text class="user-orderName h4">日志导出</text>
-        </view>
-        <view class="flex-box">
-          <view class="user-orderContBox">
-            <text wx-if="{{!phoneNumber}}" class="message">获取权限后可操作</text>
-            <text class="iconfont icon-xiayige user-orderJtou"></text>
-          </view>
-        </view>
-      </view>
-		</navigator>
-		<navigator url="{{phoneNumber?'../queryData/queryData':''}}">
-      <view class="user-order-title dis-flex b-f">
-        <view class="flex-box">
-          <text class="iconfont icon-project common-icon"></text>
-          <text class="user-orderName h4">资料查询</text>
-        </view>
-        <view class="flex-box">
-          <view class="user-orderContBox">
-            <text wx-if="{{!phoneNumber}}" class="message">获取权限后可操作</text>
-            <text class="iconfont icon-xiayige user-orderJtou"></text>
-          </view>
-        </view>
-      </view>
-        </navigator>
+  <!-- 列表布局 -->
+    <i-cell-group>
+      <i-cell i-class="i-cell-class" title="随手抓拍" is-link link-type="navigateTo"	url="{{phoneNumber?'../snap/index':''}}"><i slot="icon" class="iconfont icon-paizhao1"></i></i-cell>
+      <i-cell i-class="i-cell-class" title="任务列表" is-link link-type="navigateTo"	url="{{phoneNumber?'../taskDetail/index':''}}"><i slot="icon" class="iconfont icon-liebiao"></i><view slot="footer"><i-badge count="{{todo}}" style="margin-right:16rpx;" /></view></i-cell>
+      <i-cell i-class="i-cell-class" title="记账报销" is-link link-type="navigateTo"	url="{{phoneNumber?'../voucher/index':''}}"><i slot="icon" class="iconfont icon-pingzheng"></i></i-cell>
+      <i-cell i-class="i-cell-class" title="日志导出" is-link link-type="navigateTo"	url="{{phoneNumber?'../logs/logs':''}}"><i slot="icon" class="iconfont icon-daochurizhi"></i></i-cell>
+      <i-cell i-class="i-cell-class" title="资料查询" is-link link-type="navigateTo"	url="{{phoneNumber?'../queryData/queryData':''}}"><i slot="icon" class="iconfont icon-m_gongwenchaxun-wenjianchaxun"></i></i-cell>
+    </i-cell-group>
+  <!-- 宫格布局 -->
+    <!-- <i-grid>
+      <navigator url="{{phoneNumber?'../snap/index':''}}">
+      <i-grid-item i-class="grid-item">
+	      <view class="grid-item-concent">
+		      <text style="font-size: 55rpx !important;line-height: 55rpx;" class="iconfont icon-paishe"></text>
+		      <text class="grid-item-text">随手抓拍</text>
+	      </view>
+      </i-grid-item>
+      </navigator>
+      <navigator url="{{phoneNumber?'../taskDetail/index':''}}">
+      <i-grid-item i-class="grid-item">
+	      <view class="grid-item-concent">
+		      <text style="font-size: 46rpx !important;line-height: 55rpx;" class="iconfont icon-list"></text>
+		      <text class="grid-item-text">任务列表</text>
+	      </view>
+      </i-grid-item>
+      </navigator>
+      <navigator url="{{phoneNumber?'../voucher/index':''}}">
+      <i-grid-item i-class="grid-item">
+	      <view class="grid-item-concent">
+		      <text style="font-size: 46rpx !important;line-height: 55rpx;" class="iconfont icon-pingzheng"></text>
+		      <text class="grid-item-text">记账报销</text>
+	      </view>
+      </i-grid-item>
+      </navigator>
+    </i-grid>
+
+    <i-grid>
+      <navigator url="{{phoneNumber?'../logs/logs':''}}">
+      <i-grid-item i-class="grid-item">
+	      <view class="grid-item-concent">
+		      <text style="font-size: 40rpx !important;line-height: 55rpx;" class="iconfont icon-rizhi"></text>
+		      <text class="grid-item-text">日志导出</text>
+	      </view>
+      </i-grid-item>
+      </navigator>
+      <navigator url="{{phoneNumber?'../queryData/queryData':''}}">
+      <i-grid-item i-class="grid-item">
+	      <view class="grid-item-concent">
+		      <text style="font-size: 55rpx !important;line-height: 55rpx;" class="iconfont icon-project"></text>
+		      <text class="grid-item-text">资料查询</text>
+	      </view>
+      </i-grid-item>
+      </navigator>
+
+      <i-grid-item i-class="grid-item"></i-grid-item>
+    </i-grid> -->
       <!--微信公众号组件  -->
+      <view class='footer'>
+        <text class="phone-call" bindtap='makePhoneCall'>定制开发</text><text class="fenge">|</text><button class="cantact-button" open-type="contact">联系客服</button>
+      </view>
     <official-account class="oa"></official-account>		
   </view>
 </view>

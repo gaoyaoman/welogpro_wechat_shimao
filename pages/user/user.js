@@ -1,4 +1,5 @@
 // pages/user/user.js
+import regeneratorRuntime from '../../utils/regenerator-runtime/runtime.js';
 let dateformat = require('../../utils/dateFormat.js');
 let App = getApp();
 Page({
@@ -7,7 +8,6 @@ Page({
    * 页面的初始数据
    */
   data: {
-    roles:[],
     navbar: [],       //
     currentTab:"",    //
     dataList:[],      //
@@ -18,13 +18,8 @@ Page({
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function (options) {
-    let _this=this;
-    if (!!wx.getStorageSync('avatarUrl')) {
-      _this.setData({
-        avatarUrl: wx.getStorageSync('avatarUrl')
-      })
-    } 
+  onLoad: async function (options) {   
+    await this.getProjectData();
   },
 
   /**
@@ -38,103 +33,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    let date = dateformat.format(new Date(), 'yyyy/MM/dd');;
-    let _this = this;
-    //获取用户角色
-    wx.request({
-      url: App.globalData.api + 'wxUserController/restListByPhone',
-      data: {
-        phoneNumber: wx.getStorageSync('phoneNumber')
-      },
-      header: {
-        'content-type': 'application/json'
-      },
-      success(res) {
-        if (res.errMsg === "request:ok") {          
-          let role = res.data.data[0].note;
-          if(!role){
-            return;
-          }else{
-            _this.setData({
-              roles: role.split(',')
-            })
-            let url;
-            if (role.includes('经理')) {
-              url = App.globalData.api + 'welogTaskController/getManagerTaskList'
-            } else {
-              url = App.globalData.api + 'welogTaskController/resId'
-            }
-            wx.request({
-              url: url,
-              data: {
-                resId: wx.getStorageSync('phoneNumber'),
-              },
-              header: {
-                'content-type': 'application/json'
-              },
-              success(res) {
-                console.log('res', res)
-                if (res.errMsg === "request:ok") {
-                  if (res.data !== 'no task') {
-                    let navbar = [], dataList = [];
-                    let list = []
-                    for (let i = 0; i < res.data.length; i++) {
-                      if (res.data[i].length !== 0) {
-                        for (let j = 0; j < res.data[i].length; j++) {
-                          if (navbar.indexOf(res.data[i][j].projectName) == -1) {
-                            navbar.unshift(res.data[i][j].projectName) //在res中提取projectName构建navbar
-                          }
-                          list.push(res.data[i][j])
 
-                        }
-                      }
-                    }
-                    dataList = dataList.concat(list);
-                    for (let i = 0; i < dataList.length; i++) {
-                      dataList[i].startDate = dateformat.format(new Date(dataList[i].startDate), 'yyyy/MM/dd');
-                      dataList[i].endDate = dateformat.format(new Date(dataList[i].endDate), 'yyyy/MM/dd');
-                    }
-                    if (navbar.length === 0) {
-                      _this.setData({
-                        navbar: [],
-                        currentTab: '',
-                        dataList: [],
-                        noProject: true
-                      })
-                    } else {
-                      _this.setData({
-                        navbar: navbar,
-                        currentTab: navbar[0],
-                        dataList: dataList
-                      })
-                    }
-                  } else {
-                    _this.setData({
-                      navbar: [],
-                      currentTab: '',
-                      dataList: [],
-                      noProject: true
-                    })
-                  }
-                } else {
-                  wx.showToast({
-                    title: '网络请求失败,请稍后再试',
-                    icon: 'none',
-                    duration: 3000
-                  })
-                }
-              }
-            });
-          }
-        } else {
-          wx.showToast({
-            title: '网络请求失败,请稍后再试',
-            icon: 'none',
-            duration: 3000
-          })
-        }
-      }
-    });
   },
 
   /**
@@ -165,6 +64,75 @@ Page({
   
   },
 
+async getProjectData(){
+  let _this = this,
+        url='',
+        roles = App.globalData.roles;
+    if (roles.includes('经理')) {
+      url = App.globalData.api + 'welogTaskController/getManagerTaskList'
+    } else {
+      url = App.globalData.api + 'welogTaskController/resId'
+    }
+    await wx.request({
+      url: url,
+      data: {
+        resId: wx.getStorageSync('phoneNumber'),
+      },
+      header: {
+        'content-type': 'application/json'
+      },
+      success:function(res) {
+        if (res.errMsg === "request:ok") {
+          if (res.data !== 'no task') {
+            let navbar = [], dataList = [];
+            for (let i = 0; i < res.data.length; i++) {
+              if (res.data[i].length !== 0) {
+                for (let j = 0; j < res.data[i].length; j++) {
+                  if (navbar.indexOf(res.data[i][j].projectName) == -1) {
+                    navbar.unshift(res.data[i][j].projectName) //在res中提取projectName构建navbar
+                  }
+                  dataList.push(res.data[i][j])
+                }
+              }
+            }
+            for (let i = 0; i < dataList.length; i++) {
+              dataList[i].startDate = dateformat.format(new Date(dataList[i].startDate), 'yyyy/MM/dd');
+              dataList[i].endDate = dateformat.format(new Date(dataList[i].endDate), 'yyyy/MM/dd');
+            }
+            if (navbar.length === 0) {
+              _this.setData({
+                navbar:[],
+                currentTab:'',
+                noProject:true,
+                dataList:[]
+              });
+            } else {
+              _this.setData({
+                navbar:navbar,
+                currentTab:navbar[0],
+                noProject:false,
+                dataList:dataList
+              });
+            }
+          } else {
+            _this.setData({
+              navbar:[],
+              currentTab:'',
+              noProject:true,
+              dataList:[]
+            });
+          }
+        } else {
+          wx.showToast({
+            title: '获取个人任务列表失败,请稍后再试',
+            icon: 'none',
+            duration: 3000
+          })
+        }
+      }
+    });
+},
+
   navbarTap: function (e) {
     this.setData({
       currentTab: e.currentTarget.dataset.title,
@@ -184,36 +152,9 @@ Page({
   },
   //自定义方法：
   //注销登陆
-  logout:function(){
-    wx.removeStorageSync('openid');
-    wx.removeStorageSync('sessionKey');
-    wx.removeStorageSync('phoneNumber');
-    wx.removeStorageSync('avatarUrl');
-    wx.removeStorageSync('nickName');
-    wx.login({
-      success: res => {
-        //发送 res.code 到后台换取 openId, sessionKey, unionId
-        var errMsg = res.errMsg;
-        if (errMsg != "login:ok") {
-          me.showHint("错误提示", "出错了，请稍后再试试...")
-        } else {
-          var code = res.code; //（获取code代码）
-          wx.request({
-            url: getApp().globalData.api + 'wxuser/login',
-            data: {
-              code: code
-            },
-            header: {
-              'content-type': 'application/json' // 默认值
-            },
-            success: function (res) {
-              wx.setStorageSync('openid', res.data.openid);
-              wx.setStorageSync('sessionKey', res.data.sessionKey);
-            }
-          })
-        }
-      }
-    })
+  async logout(){
+    wx.clearStorageSync()
+    await App.login();
     wx.navigateBack();
   }
 })

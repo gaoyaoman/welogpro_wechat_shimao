@@ -2,9 +2,9 @@
   <view hidden='{{changeYearFlag}}'>
   <!-- 显示当前月份 的头部 -->
     <view  class='top-navbar'>
-      <text class="iconfont icon-fanhui" bindtap='lastMonth'></text>
+      <text class="iconfont icon-left-circle" bindtap='lastMonth'></text>
       <view bindtap='changeYear'>{{year}}年{{month}}月</view>
-      <text class="iconfont icon-gengduo" bindtap='nextMonth'></text>
+      <text class="iconfont icon-right-circle" bindtap='nextMonth'></text>
     <!-- <text class="iconfont icon-xiayige user-orderJtou" bindtap='changeDate'></text> -->
     <!-- <text class="iconfont icon-rili" bindtap='changeDate'></text> -->
     </view>

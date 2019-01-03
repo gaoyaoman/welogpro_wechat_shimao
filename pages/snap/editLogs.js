@@ -1,5 +1,6 @@
 // pages/editLogs/editLogs.js
 let dateformat = require('../../utils/dateFormat.js');
+let App=getApp();
 let _this;
 Page({
 
@@ -49,27 +50,24 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    _this = this;
+    let _this = this;
     //入口随手抓拍
     if (options.src) {
       let images = [];
-      wx.compressImage({
-        src: options.src,
-        quality: 30,
-        success: function (re) {
-          images.push(re.tempFilePath);
-          _this.setData({
-            images: images,
-            href: 1
-          });
-        },
-        fail: function (e) {
-          console.log('fail to compress image', e);
-        }
-      })
-
+      images.push(options.src);
+      _this.setData({
+        images: images, 
+        href: 1
+      });
+       let url='',
+        roles = App.globalData.roles;
+      if (roles.includes('经理')) {
+        url = getApp().globalData.api + 'welogTaskController/getManagerTaskList'
+      } else {
+        url = getApp().globalData.api + 'welogTaskController/resId'
+      }
       wx.request({
-        url: getApp().globalData.api + 'welogTaskController/resId',
+        url: url,
         data: {
           resId: wx.getStorageSync('phoneNumber'),
         },
@@ -141,7 +139,7 @@ Page({
           phoneNumber: wx.getStorageSync('phoneNumber'),
           position:''
         }
-        let role = wx.getStorageSync('roles');
+        let role = App.globalData.roles;
         if (role && role.includes('经理')){
           data.position='经理'
         }
@@ -188,7 +186,6 @@ Page({
 			}
       let note;
       if (options.status === '4') {
-        console.log(options);
         if (wx.getStorageSync('imgComparison')) {
           let imgComparison = wx.getStorageSync('imgComparison');
           let base64 = 'data:image/jpeg;base64,' + imgComparison;//base64格式图片
@@ -256,34 +253,18 @@ Page({
 	},
 
   chooseImage: function () {
+    _this=this;
     // 选择图片
     wx.chooseImage({
       count: 1,
-      sizeType: ['compressed'],
-      sourceType: ['album', 'camera'],
+      sizeType: ['original'],
+      sourceType: ['album'],
       // 可以指定来源是相册还是相机，默认二者都有
       success: function (res) {
-        // 返回选定照片的本地文件路径列表，tempFilePath可以作为img标签的src属性显示图片
-        wx.getImageInfo({
-          src: res.tempFilePaths[0],
-          success(res1) {
-            wx.compressImage({
-              src: res.tempFilePaths[0],
-              quality: 30,
-              success: function (res2) {
-                let src = [];
-                src.push(res2.tempFilePath);
-                _this.setData({
-                  imgWidth: res1.width,
-                  imgHeight: res1.height,
-                  images: src
-                });
-              },
-              fail: function (res2) {
-                console.log('fail', res2)
-              }
-            })
-          }
+        let src = [];
+        src.push(res.tempFilePaths[0]);
+        _this.setData({
+          images: src
         });
       }
     })
@@ -308,16 +289,17 @@ Page({
   //删除图片
   deleteImg: function (e) {
     let index = e.currentTarget.dataset.index;
-    let images = _this.data.images;
-    let count = _this.data.count--;
+    let images = this.data.images;
+    let count = this.data.count--;
     images.splice(index, 1);
-    _this.setData({
+    this.setData({
       images: images,
       count: count
     });
   },
   //选择项目
   selectProject: function (e) {
+    _this=this;
     _this.setData({
       task: null,
       projectName: _this.data.projectList[e.detail.value]
@@ -333,12 +315,14 @@ Page({
   },
   //选择照片质量
   selectImgQuality: function (e) {
+    _this=this;
     _this.setData({
       imgQuality: _this.data.imgQualityList[e.detail.value],
     });
   },
   //选择任务
   selectTask: function (e) {
+    _this=this;
     _this.setData({
       task: _this.data.taskList[e.detail.value],
       id: _this.data.idListTemp[e.detail.value].id
@@ -347,6 +331,7 @@ Page({
 
   //选择类型：质量、安全、进度
   selectType: function (e) {
+    _this = this;
     let note = null,
       taskType = _this.data.typeList[e.detail.value];
     switch (taskType) {
@@ -366,30 +351,35 @@ Page({
   },
   //选择安全巡检项
   selectNoteSafe: function (e) {
+    _this = this;
     _this.setData({
       noteSafe: _this.data.noteSafeList[e.detail.value]
     });
   },
   //填写进度信息
   inputNoteSchedule: function (e) {
+    _this = this;
     _this.setData({
       noteSchedule: e.detail.detail.value
     })
   },
   //选择任务状态：未开始、进行中、节点验收中、节点验收完成、需整改、整改中、整改完成、任务最终完成
   selectStatus: function (e) {
+    _this = this;
     _this.setData({
       taskStatus: _this.data.statusList[e.detail.value]
     });
   },
   //图片描述文字录入
   textChange: function (e) {
+    _this = this;
     _this.setData({
       textInfo: e.detail.detail.value
     })
   },
   //保存数据
   saveData: function () {
+    _this = this;
     if (!_this.data.textInfo) {
       wx.showToast({
         title: '请添加照片文字说明',
@@ -536,9 +526,20 @@ Page({
       loading: true,
       loading2:true
     });
+
+    let url;
+    if (wx.getSystemInfoSync().platform!=="ios"){ //非iOS
+      url = getApp().globalData.api + 'welogTaskController/addworklog';
+    }else{ //iOS
+      if(_this.data.href===1){ //随手抓拍
+        url = getApp().globalData.api + 'welogTaskController/addworklog_hand';
+      }else{
+        url = getApp().globalData.api + 'welogTaskController/addworklog';
+      }
+    }
     //提交日志
     wx.request({
-      url: getApp().globalData.api + 'welogTaskController/addworklog',
+      url,
       method: 'POST',
       data: {
         log
@@ -602,6 +603,7 @@ Page({
                     'content-type': 'application/x-www-form-urlencoded'
                   },
                   success: function (r) {
+                    console.log('修改数据库success:',r);
                     if (taskStatus === '4') {
                       //发短信
                       wx.request({
@@ -679,12 +681,13 @@ Page({
                       'content-type': 'application/x-www-form-urlencoded'
                     },
                     success: function (ee) {
+                      console.log('短信接口success:',ee);
                       _this.setData({
                         loading2: false
                       })
                     },
                     complete: function (ee) {
-                      console.log(ee);
+                      console.log('短信接口complete:',ee);
                       wx.showModal({
                         title: '',
                         content: '日志提交成功！',
@@ -716,6 +719,12 @@ Page({
               }
             })
           }
+        }else if(res.data==='照片不是当天拍摄,请重新上传'){
+          wx.showToast({
+            title: '照片不是当天拍摄,请重新上传',
+            icon: 'none',
+            mask: true
+          })
         }
         else {
           wx.showToast({

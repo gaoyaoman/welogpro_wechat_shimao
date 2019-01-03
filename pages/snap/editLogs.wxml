@@ -1,6 +1,6 @@
-<view  style="padding-bottom:20rpx">
+<scroll-view scroll-y="{{!loading1}}" style="padding-bottom:20rpx">
   <i-panel title="文字说明:">
-    <i-input value="{{textInfo}}" bind:change="textChange" type="textarea" placeholder="文字说明内容" />
+    <i-input value="{{textInfo}}" bind:change="textChange" type="textarea"/>
   </i-panel>
   <view wx-if="{{comparison.status}}">
   <i-panel title="对比照片:">
@@ -20,7 +20,7 @@
     <view class="gallery">   
       <view class="item" wx:for="{{images}}" wx:key="">
           <image src="{{item}}" data-src="{{item}}" bindtap="previewImage" mode="aspectFill" />
-          <view class="delete" bindtap="deleteImg" data-index="{{index}}"><i class="iconfont icon-shanchu"></i></view>
+          <view class="delete" bindtap="deleteImg" data-index="{{index}}"><i class="iconfont icon-shanchu1"></i></view>
       </view>
       <view class="item" bindtap="chooseImage" wx-if="{{images.length<1}}">
           <view class='addIcon'>
@@ -89,4 +89,4 @@
 
   <i-spin size="large" custom fix wx:if="{{ loading1 }}">正在载入已填报的日志数据...</i-spin>
   <i-spin size="large" custom fix wx:if="{{ loading2 }}">日志提交中...</i-spin>
-</view>
+</scroll-view>

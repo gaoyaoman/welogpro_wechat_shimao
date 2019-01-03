@@ -1,6 +1,7 @@
+
 .user-header .user-bg-box {
   width: 100%;
-  background:#1860be;
+  background:#0f3a87;
   display: flex;
   height: 190rpx;
   overflow: hidden;
@@ -28,93 +29,6 @@
   margin-top: 0;
 }
 
-.user-admin {
-  display: block;
-  width: 190rpx;
-  font-size: 32rpx;
-  text-align: center;
-  margin: 4rpx 0 0 0;
-  color: #444;
-}
-
-.user-tag {
-  top: -8rpx;
-  right: 40rpx;
-  font-size: 22rpx;
-  background: #ff495e;
-  text-align: center;
-  line-height: 28rpx;
-  color: #fff;
-  border-radius: 100%;
-  min-height: 30rpx;
-  min-width: 30rpx;
-  padding: 1rpx;
-}
-
-.user-order-cont {
-  padding: 25rpx 0;
-  box-shadow: 1px 0px 5px rgba(50, 50, 50, 0.3);
-  color: #777;
-  font-size: 30rpx;
-  border-top: 1rpx solid #eee;
-}
-
-.user-order-cont .orderListIcon {
-  text-align: center;
-  margin: 0 auto;
-  display: block;
-  padding-top: 10rpx;
-  color: #999;
-  font-size: 34rpx;
-}
-
-.user-order-cont .listCont {
-  display: block;
-  font-size: 24rpx;
-  color: #999;
-  text-align: center;
-  padding-top: 4rpx;
-}
-
-.user-order-cont .moneyListNum {
-  text-align: center;
-  color: #f42424;
-  font-size: 38rpx;
-  padding: 0 15rpx;
-}
-
-.user-order-title .common-icon {
-  position: absolute;
-  left: 15px;
-  top: 50%;
-  margin-top: -20rpx;
-  font-size: 34rpx;
-  color: #777;
-}
-
-.user-order-title {
-  border-bottom: 1rpx solid #eee;
-  padding: 32rpx 0;
-  position: relative;
-}
-
-/* asd */
-
-.user-list {
-  padding: 30rpx 15rpx;
-}
-
-.user-list .li .common-icon {
-  font-size: 46rpx;
-}
-
-.user-list-service {
-  padding: 30rpx 0 0 0;
-}
-
-.user-list-service .li {
-  padding-bottom: 45rpx;
-}
 .avatar{
   height: 140rpx;
   width: 140rpx;
@@ -126,22 +40,11 @@
   opacity: 0
 }
 .phone-box{
-  /* height: 145rpx; */
   margin-top: 36rpx;
-  margin-left: 20rpx;
+  margin-left: 50rpx;
   color: #fff;
 }
-.phone-box-r{
-  height:160rpx;
-  width:100%;
-  display:flex;
-  justify-content:space-around;
-  align-items:center;
-  color: #fff;
-}
-.phone-box-text{
-  margin-left: 20rpx;
-}
+
 .tip-big{
   font-size: 34rpx;
 }
@@ -158,3 +61,76 @@
   bottom: 0;
   width: calc(100vw);
 }
+
+/* 宫格版样式 */
+.grid-item{
+  background-color: #ffffff;
+  height: 200rpx;
+}
+.grid-item-concent{
+  margin-top: 12rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #777777
+}
+.grid-item-text{
+  font-size: 26rpx;
+  margin-top: 10rpx;
+}
+
+/* 列表版样式 */
+.i-cell-class{
+  height: 90rpx;
+  color:#515a6e;
+}
+
+/* header 个人信息概览面板右侧部分 */
+.header-info{
+  height: 145rpx;
+  padding: 16rpx 16rpx 16rpx 30rpx;
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.nick-name{
+  color: #ffffff;
+  font-size: 40rpx;
+}
+.icon-self-setting{
+  line-height:145rpx;
+  font-size:30rpx;
+  color:#ffffff;
+}
+
+.footer{
+  margin-top: 30rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+}
+.phone-call{
+  font-size: 24rpx;
+  color: #192f62;
+}
+.fenge{
+  font-size: 25rpx;
+  color: #90939a;
+  margin: 0 16rpx;
+}
+.cantact-button{
+  font-size:24rpx;
+  padding:0;
+  margin:0;
+  line-height:24rpx;
+  color: #192f62;
+  width: 100rpx;
+}
+.cantact-button::after{
+  border:none;
+}
+
+

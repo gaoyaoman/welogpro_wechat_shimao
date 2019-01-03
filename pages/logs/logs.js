@@ -14,62 +14,19 @@ Page({
 		disabled:true,
 		pdfURL:'',
     start_date:null,
-    end_date:null
+    end_date:null,
+    taskType:null,
+    taskTypeList:['全部类型','需整改']
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-		let _this = this;
-    let roles=wx.getStorageSync('roles');
-    let url;
-    if (roles.includes('经理')) {
-      url = App.globalData.api + 'welogTaskController/getManagerTaskList'
-    } else {
-      url = App.globalData.api + 'welogTaskController/resId'
-    }
-		wx.request({
-			url: url,
-			data: {
-				resId: wx.getStorageSync('phoneNumber'),
-				taskDate: dateformat.format(new Date(), 'yyyy-MM-dd')
-			},
-			header: {
-				'content-type': 'application/json'
-			},
-			success(res) {
-				// console.log('res', res)
-				if (res.errMsg === "request:ok") {
-					if(res.data!=='no task'){
-						let navbar = [];
-						for (let i = 0; i < res.data.length; i++) {
-							if (res.data[i].length !== 0) {
-								for (let j = 0; j < res.data[i].length; j++) {
-									if (navbar.indexOf(res.data[i][j].projectName) == -1) {
-										navbar.unshift(res.data[i][j].projectName)
-									}
-								}
-							}
-						}
-						_this.setData({
-							projectList: navbar
-						})
-					}
-					else{
-						_this.setData({
-							projectList: ['暂无可导出的项目']
-						})
-					}
-				} else {
-					wx.showToast({
-						title: '网络请求失败,请稍后再试',
-						icon: 'none',
-						duration: 3000
-					})
-				}
-			}
-		});
+    let navbar = wx.getStorageSync('navbar') ? wx.getStorageSync('navbar') : ['暂无可导出的项目'];
+    this.setData({
+      projectList: navbar
+    })
   },
 //选择开始时间
   selectStartDate:function(e){
@@ -81,6 +38,13 @@ Page({
   selectEndDate: function (e) {
     this.setData({
       end_date: e.detail.value
+    });
+  },
+  //选择日志分类
+  selectTaskType: function (e) {
+    let _this=this;
+    this.setData({
+      taskType: _this.data.taskTypeList[e.detail.value]
     });
   },
 //选择项目名称
@@ -150,7 +114,7 @@ Page({
 		// 			}
 		// 		}), 1000)
 		// 	}
-		// })
+		// })\
 		wx.request({
 			url: App.globalData.api + 'saveProjectController/getWorklogListExport',
 			data: {
@@ -158,7 +122,7 @@ Page({
 				projectName:_this.data.projectName,
                 startDate:_this.data.start_date,
                 endDate:_this.data.end_date,
-				position:wx.getStorageSync('roles')
+				position: App.globalData.roles
 			},
 			header: {
 				'content-type': 'application/json'

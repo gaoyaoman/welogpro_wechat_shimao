@@ -2,17 +2,6 @@
 @import "/utils/iconfont.wxss";
 
 
-.container, input {
-  font-family: PingFang-Medium,
-                 PingFangSC-Regular,
-                 Heiti,
-                 Heiti SC,
-                 DroidSans,
-                 DroidSansFallback,
-                 "Microsoft YaHei",
-                 sans-serif;
-  -webkit-font-smoothing: antialiased;
-}
 
 page {
   background: #f7f7f7;
@@ -295,4 +284,16 @@ page {
   -moz-transition: all 0.5s;
   -o-transition: all 0.5s;
   transition: all 0.5s;
+}
+
+.picker {
+  padding: 13px;
+  background-color: #fff;
+}
+
+.btn-icon{
+  font-size: 54rpx;
+  line-height: 54rpx;
+  height: 54rpx;
+  margin-top: 19rpx;
 }

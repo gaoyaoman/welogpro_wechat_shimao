@@ -97,76 +97,40 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    let _this = this;
-		// _this.getFillData();
-    //获取用户角色：安全、质量和进度
-    wx.request({
-      url: App.globalData.api + 'wxUserController/restListByPhone',
-      data: {
-        phoneNumber: wx.getStorageSync('phoneNumber')
-      },
-      header: {
-        'content-type': 'application/json'
-      },
-      success(res) {
-        if (res.errMsg === "request:ok") {
-          let role = res.data.data[0].note;
-          if (role === null) {
-            _this.setData({
-              quality: false,
-              shcedule: false,
-              safe: false
-            })
-            return true;
-          }
-          //判断用户role字符串是否含有含有相应的子字符串
-          if (role.includes('质量')) {
-            _this.setData({
-              quality: true
-            })
-          }
-          if (role.includes('进度')) {
-            _this.setData({
-              shcedule: true
-            })
-          }
-          if (role.includes('安全')) {
-            _this.setData({
-              safe: true
-            })
-          }
-          if (role.includes('经理')){
-            _this.setData({
-              quality: true,
-              shcedule: true,
-              safe: true,
-              roles: role
-            })
-          }
-          let date = null;
-          if (App.globalData.ifFromMonth && App.globalData.projectDay) {
-            //从日历界面跳转来
-            date = dateformat.format(new Date(App.globalData.projectDay), 'yyyy/MM/dd');
-          } else {
-            //从主页index跳转来
-            date = dateformat.format(new Date(), 'yyyy/MM/dd');
-          }
-          _this.setData({
-            isToday: date,
-            noProject: false
-          })
-          _this.getData(date);
-
-        } else {
-          wx.showToast({
-            title: '网络请求失败,请稍后再试',
-            icon: 'none',
-            duration: 3000
-          })
-        }
-      }
+    let _this = this,
+      quality = false,
+      shcedule = false,
+      safe = false;
+    let roles = App.globalData.roles;
+    if (roles.includes('质量')) quality = true;
+    if (roles.includes('进度')) shcedule = true;
+    if (roles.includes('安全')) safe = true;
+    if(roles.includes('经理')){
+      quality = !quality;
+      shcedule = !shcedule;
+      safe = !safe;
+    }
+    this.setData({
+      quality,
+      shcedule,
+      safe,
+      roles
     });
-  },
+    let date = null;
+    if (App.globalData.ifFromMonth && App.globalData.projectDay) {
+      //从日历界面跳转来
+      date = dateformat.format(new Date(App.globalData.projectDay), 'yyyy/MM/dd');
+    } else {
+      //从主页index跳转来
+      date = dateformat.format(new Date(), 'yyyy/MM/dd');
+    }
+    _this.setData({
+      isToday: date,
+      noProject: false
+    })
+    _this.getData(date);
+
+	  },
   // 切换前一天或者后一天
   changeDay(e){
     let _this = this;

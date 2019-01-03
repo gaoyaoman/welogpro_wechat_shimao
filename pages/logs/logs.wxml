@@ -22,7 +22,15 @@
 		  <picker bindchange="selectProject" value="{{index}}" range="{{projectList}}" class='picker'>
 			  <text class='project-selected'>{{projectName?projectName:'未选择'}}</text>
 		  </picker>
-		  <i-button bind:click="searchLogs" type="primary" inline="{{ifInLine}}" size="small" loading="{{loading}}">导出</i-button>
+	  </view>
+	</i-panel>
+
+  <i-panel title="选择日志类型">
+	  <view class='search-bar'>
+		  <picker bindchange="selectTaskType" value="{{index}}" range="{{taskTypeList}}" class='picker'>
+			  <text class='project-selected'>{{taskType?taskType:'未选择'}}</text>
+		  </picker>
+      <i-button bind:click="searchLogs" type="primary" inline="{{ifInLine}}" size="small" loading="{{loading}}">导出</i-button>
 	  </view>
 	</i-panel>
 

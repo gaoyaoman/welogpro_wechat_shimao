@@ -30,7 +30,7 @@ Page({
   //获取用户昵称、头像等基本信息
   bindGetUserInfo: function (e) {
     let _this = this;
-    if (e.detail.errMsg === "getUserInfo:ok"){
+    if (e.detail.errMsg === "getUserInfo:ok") {
       wx.request({
         url: getApp().globalData.api + 'wxuser/info',
         data: {
@@ -53,11 +53,11 @@ Page({
         }
       })
     }
-    else if (e.detail.errMsg === "getUserInfo:fail auth deny"){
+    else if (e.detail.errMsg === "getUserInfo:fail auth deny") {
       wx.showToast({
         title: '您未授权小程序，请先允许微信授权，再获取头像昵称等基本信息',
-        icon:'none',
-        duration:3000
+        icon: 'none',
+        duration: 3000
       })
     }
   }

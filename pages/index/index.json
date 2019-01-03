@@ -1,6 +1,16 @@
 {
     "navigationBarTitleText": "工程管理日志",
+    "enablePullDownRefresh":true,
     "usingComponents": {
-      "i-badge": "../../dist/badge/index"
-    }
+      "i-badge": "../../dist/badge/index",
+      "i-grid": "../../dist/grid/index",
+      "i-grid-item": "../../dist/grid-item/index",
+      "i-grid-icon": "../../dist/grid-icon/index",
+      "i-grid-label": "../../dist/grid-label/index",
+      "i-tag": "../../dist/tag/index",
+      "i-cell-group": "../../dist/cell-group/index",
+      "i-cell": "../../dist/cell/index"
+    },
+    "backgroundColor":"#0f3a87",
+    "backgroundTextStyle": "light"
 }
